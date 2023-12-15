@@ -1,4 +1,5 @@
 import {NavLink} from 'react-router-dom';
+import HorizonHubSvg from '../public/HorizonHub.svg';
 
 interface INavLinkOption {
     name: string,
@@ -18,8 +19,8 @@ const NavLinkOption = (props: INavLinkOption) =>
 
 const Sidebar = () =>
     <div
-        className='fixed right-0 top-0 z-50 flex h-screen w-[150px] flex-col items-center gap-16 bg-gray-800 p-2 px-6 pb-4'>
-        <div className='h-28 w-28 rounded-full bg-orange-600'></div>
+        className='fixed right-0 top-0 z-50 flex h-screen w-[150px] flex-col items-center gap-8 bg-gray-800 px-6 pb-4'>
+        <img src={HorizonHubSvg} className="h-36 w-36" alt="HorizonHub Logo"/>
         <ul className='flex flex-col items-center gap-8'>
             <NavLinkOption name='מסך בית' link='dashboard'/>
             <NavLinkOption name='התחברות' link='login'/>
