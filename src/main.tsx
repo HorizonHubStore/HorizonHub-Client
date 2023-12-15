@@ -2,11 +2,11 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import Root from "./pages/Root.tsx";
-import ErrorPage from "./pages/ErrorPage.tsx";
-import {SignupRoute} from "./pages/SignupRoute.tsx";
-import {LoginRoute} from "./pages/LoginRoute.tsx";
-import {DashboardRoute} from "./pages/DashboardRoute.tsx";
+import Root from "./routes/Root.tsx";
+import ErrorPage from "./components/pages/ErrorPage.tsx";
+import {SignupRoute} from "./routes/SignupRoute.tsx";
+import {LoginRoute} from "./routes/LoginRoute.tsx";
+import {DashboardRoute} from "./routes/DashboardRoute.tsx";
 
 const router = createBrowserRouter([
     {
