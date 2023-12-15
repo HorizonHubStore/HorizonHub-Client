@@ -11,8 +11,8 @@ import {DashboardRoute} from "./routes/DashboardRoute.tsx";
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <Root />,
-        errorElement: <ErrorPage />,
+        element: <Root/>,
+        errorElement: <ErrorPage/>,
         children: [
             {
                 path: 'dashboard',
@@ -27,12 +27,16 @@ const router = createBrowserRouter([
                 element: <SignupRoute/>,
             },
             {
+                path: 'error',
+                element: <ErrorPage/>,
+            },
+            {
                 path: '/',
-                element: <Navigate to='dashboard'/>,
+                element: <Navigate to='login'/>,
             },
             {
                 path: '*',
-                element: <Navigate to='dashboard'/>,
+                element: <Navigate to='login'/>,
             },
         ],
     },

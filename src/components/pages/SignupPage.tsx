@@ -1,35 +1,33 @@
 import {ChangeEvent, useState} from "react";
-import {useAuthenticationDispatch} from "../../store/hook/useAuthentication.ts";
 import {useNavigate} from "react-router-dom";
 import axios from 'axios';
 import {Button, TextField} from "@mui/material";
 
-const Login = () => {
+const SignupPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const authenticationDispatch = useAuthenticationDispatch();
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleLogin = async () => {
+    const handleSignup = async () => {
         console.log(username, password);
         try {
+            // Validate username and password
+            if (username.length < 5 || password.length < 5) {
+                setError('Username and password must be at least 5 characters long.');
+                return;
+            }
             // Send a POST request to your backend login endpoint
             const response = await axios.post(
-                (import.meta.env.VITE_SERVER + import.meta.env.VITE_SERVER_LOGIN_PATH),
+                (import.meta.env.VITE_SERVER + import.meta.env.VITE_SERVER_SIGNUP_PATH),
                 {username, password},
                 {headers: {'Content-Type': 'application/json'}}
             );
 
-            // Retrieve the token from the response
-            const token = response.data.token;
+            // Optionally, handle the response from the backend (e.g., show a success message)
+            console.log(response.data);
 
-            // Store the token in localStorage
-            localStorage.setItem('authToken', token);
-
-            // Update the authentication status
-            authenticationDispatch({type: 'set-isAuthenticated', payload: true});
-
-            navigate('dashboard');
+            navigate('login');
         } catch (error) {
             if (error instanceof Error) {
                 navigate('error');
@@ -41,7 +39,7 @@ const Login = () => {
     return (
         <div
             className='mt-[25vh] p-[40px] translate-x--1/2 translate-y--1/2 bg-[rgba(0,0,0,.6)] box-border rounded-[10px]'>
-            <h2 className='mt-0 mx-0 mb-[30px] p-0 text-white text-center text-4xl'>Log In</h2>
+            <h2 className='mt-0 mx-0 mb-[30px] p-0 text-white text-center text-4xl'>Sign Up</h2>
             <form className='flex justify-center items-center flex-col gap-6'>
                 <TextField className='w-[400px]' label="Username" variant="outlined"
                            onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -51,10 +49,11 @@ const Login = () => {
                            onChange={(event: ChangeEvent<HTMLInputElement>) => {
                                setPassword(event.target.value);
                            }}/>
-                <Button className='w-[200px]' variant="contained" onClick={handleLogin}>Submit</Button>
+                {error && <p className="text-red-700">{error}</p>}
+                <Button className='w-[200px]' variant="contained" onClick={handleSignup}>Submit</Button>
             </form>
         </div>
     );
 };
 
-export default Login;
+export default SignupPage;
