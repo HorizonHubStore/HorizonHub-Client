@@ -1,7 +1,7 @@
 import {ReactElement, useReducer} from "react";
-import {authenticationContext, authenticationDispatchContext} from "./context/authenticationContext.ts";
-import {authenticationReducer} from "./reducer/authenticationReducer.ts";
-import {authenticationInitialState} from "./initialState/authenticationInitialState.ts";
+import {authenticationContext, authenticationDispatchContext} from "../store/context/authenticationContext.ts";
+import {authenticationReducer} from "../store/reducer/authenticationReducer.ts";
+import {authenticationInitialState} from "../store/initialState/authenticationInitialState.ts";
 
 const ContextProvider = ({ children }:{children: ReactElement}) => {
      const [authentication, authenticationDispatch] = useReducer(authenticationReducer, authenticationInitialState);
