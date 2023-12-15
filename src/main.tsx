@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
 import Root from "./routes/Root.tsx";
 import ErrorPage from "./components/pages/ErrorPage.tsx";
 import {SignupRoute} from "./routes/SignupRoute.tsx";
@@ -15,6 +15,10 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
             {
+                path: 'dashboard',
+                element: <DashboardRoute/>,
+            },
+            {
                 path: 'login',
                 element: <LoginRoute/>,
             },
@@ -23,8 +27,12 @@ const router = createBrowserRouter([
                 element: <SignupRoute/>,
             },
             {
-                path: 'dashboard',
-                element: <DashboardRoute/>,
+                path: '/',
+                element: <Navigate to='dashboard'/>,
+            },
+            {
+                path: '*',
+                element: <Navigate to='dashboard'/>,
             },
         ],
     },

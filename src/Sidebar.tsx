@@ -21,9 +21,9 @@ const Sidebar = () =>
         className='fixed right-0 top-0 z-50 flex h-screen w-[150px] flex-col items-center gap-16 bg-gray-800 p-2 px-6 pb-4'>
         <div className='h-28 w-28 rounded-full bg-orange-600'></div>
         <ul className='flex flex-col items-center gap-8'>
+            <NavLinkOption name='מסך בית' link='dashboard'/>
             <NavLinkOption name='התחברות' link='login'/>
             <NavLinkOption name='הרשמה' link='signup'/>
-            <NavLinkOption name='מסך בית' link='dashboard'/>
         </ul>
     </div>
 
