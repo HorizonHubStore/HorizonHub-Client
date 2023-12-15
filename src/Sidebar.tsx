@@ -1,5 +1,5 @@
 import {NavLink} from 'react-router-dom';
-import HorizonHubSvg from '../public/HorizonHub.svg';
+import HorizonHubSvg from './assets/HorizonHub.svg';
 
 interface INavLinkOption {
     name: string,
