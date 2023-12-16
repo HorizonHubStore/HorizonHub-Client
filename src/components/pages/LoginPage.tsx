@@ -32,7 +32,7 @@ const Login = () => {
 
             // Update the authentication status
             authenticationDispatch({type: 'set-isAuthenticated', payload: true});
-
+            
             navigate('dashboard');
         } catch (error) {
             if (error instanceof Error) {
