@@ -8,16 +8,24 @@ const DashboardPage = () => {
     const navigate = useNavigate();
 
     const handleLogout = async () => {
+        const authToken = localStorage.getItem('authToken');
+        const refreashToken = localStorage.getItem("refreashToken")
         try {
             // Send a POST request to your backend logout endpoint
             const response = await axios.post(
-                (import.meta.env.VITE_SERVER + import.meta.env.VITE_SERVER_LOGOUT_PATH));
+                (import.meta.env.VITE_SERVER + import.meta.env.VITE_SERVER_LOGOUT_PATH),null,{
+                    headers: {
+                        authorization: `JWT ${authToken} ${refreashToken}`,
+                      // Add other headers as needed
+                    },
+                  });
 
             // Optionally, handle the response from the backend (e.g., display a success message)
             console.log(response.data);
 
             // Remove the token from localStorage on logout
             localStorage.removeItem('authToken');
+            localStorage.removeItem('refreashToken');
 
             // Update the authentication status
             authenticationDispatch({type: 'set-isAuthenticated', payload: false});

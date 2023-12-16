@@ -21,10 +21,14 @@ const Login = () => {
             );
 
             // Retrieve the token from the response
-            const token = response.data.token;
+            console.log(response.data);
+            
+            const accessToken = response.data.accessToken;
+            const refreashToken = response.data.refreashToken;
 
             // Store the token in localStorage
-            localStorage.setItem('authToken', token);
+            localStorage.setItem('authToken', accessToken);
+            localStorage.setItem('refreashToken', refreashToken)
 
             // Update the authentication status
             authenticationDispatch({type: 'set-isAuthenticated', payload: true});
