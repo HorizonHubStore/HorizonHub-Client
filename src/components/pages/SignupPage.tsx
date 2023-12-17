@@ -27,7 +27,7 @@ const SignupPage = () => {
             // Optionally, handle the response from the backend (e.g., show a success message)
             console.log(response.data);
 
-            navigate('login');
+            navigate('/login');
         } catch (error) {
             if (error instanceof Error) {
                 navigate('error');

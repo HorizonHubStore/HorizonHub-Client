@@ -2,6 +2,7 @@ import {Button} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {useAuthenticationDispatch} from "../../store/hook/useAuthentication.ts";
+import { useUserData } from "../../store/hook/useUserData.ts";
 
 const DashboardPage = () => {
     const authenticationDispatch = useAuthenticationDispatch();
@@ -31,7 +32,7 @@ const DashboardPage = () => {
             authenticationDispatch({type: 'set-isAuthenticated', payload: false});
 
             // Redirect to the login page after logout
-            navigate('login');
+            navigate('/login');
         } catch (error) {
             if (error instanceof Error) {
                 navigate('error');
@@ -39,10 +40,13 @@ const DashboardPage = () => {
             }
         }
     };
+    const { fullName } = useUserData();
+
+    
     return (
         <div
             className='mt-[25vh] p-[40px] translate-x--1/2 translate-y--1/2 bg-[rgba(0,0,0,.6)] box-border rounded-[10px]'>
-            <h2 className='mt-0 mx-0 mb-[30px] p-0 text-white text-center text-4xl'>Dashboard</h2>
+            <h2 className='mt-0 mx-0 mb-[30px] p-0 text-white text-center text-4xl'>Welcome to {fullName} Dashboard </h2>
             <Button className='w-[200px]' variant="contained" onClick={handleLogout}>Logout</Button>
         </div>
     );
