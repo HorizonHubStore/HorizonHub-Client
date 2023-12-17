@@ -6,11 +6,11 @@ import {Button, TextField} from "@mui/material";
 const SignupPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [fullName, setFullName] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleSignup = async () => {
-        console.log(username, password);
         try {
             // Validate username and password
             if (username.length < 5 || password.length < 5) {
@@ -20,14 +20,14 @@ const SignupPage = () => {
             // Send a POST request to your backend login endpoint
             const response = await axios.post(
                 (import.meta.env.VITE_SERVER + import.meta.env.VITE_SERVER_SIGNUP_PATH),
-                {username, password},
+                {username, password,fullName},
                 {headers: {'Content-Type': 'application/json'}}
             );
 
             // Optionally, handle the response from the backend (e.g., show a success message)
             console.log(response.data);
 
-            navigate('login');
+            navigate('/login');
         } catch (error) {
             if (error instanceof Error) {
                 navigate('error');
@@ -41,6 +41,10 @@ const SignupPage = () => {
             className='mt-[25vh] p-[40px] translate-x--1/2 translate-y--1/2 bg-[rgba(0,0,0,.6)] box-border rounded-[10px]'>
             <h2 className='mt-0 mx-0 mb-[30px] p-0 text-white text-center text-4xl'>Sign Up</h2>
             <form className='flex justify-center items-center flex-col gap-6'>
+            <TextField className='w-[400px]' label="Username" variant="outlined"
+                           onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                               setFullName(event.target.value);
+                           }}/>
                 <TextField className='w-[400px]' label="Username" variant="outlined"
                            onChange={(event: ChangeEvent<HTMLInputElement>) => {
                                setUsername(event.target.value);

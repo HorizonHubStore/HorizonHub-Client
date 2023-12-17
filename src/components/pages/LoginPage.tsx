@@ -3,15 +3,20 @@ import {useAuthenticationDispatch} from "../../store/hook/useAuthentication.ts";
 import {useNavigate} from "react-router-dom";
 import axios from 'axios';
 import {Button, TextField} from "@mui/material";
+import { useUserDataDispatch } from "../../store/hook/useUserData.ts";
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const userDataDispatch = useUserDataDispatch();
     const authenticationDispatch = useAuthenticationDispatch();
     const navigate = useNavigate();
-
     const handleLogin = async () => {
-        console.log(username, password);
+    
+        
+        
+            
+
         try {
             // Send a POST request to your backend login endpoint
             const response = await axios.post(
@@ -21,15 +26,21 @@ const Login = () => {
             );
 
             // Retrieve the token from the response
-            const token = response.data.token;
+            console.log(response.data);
+            const userData = response.data.userData
+            const accessToken = response.data.accessToken;
+            const refreashToken = response.data.refreashToken;
+            userDataDispatch({type: 'set-userData', payload: {username:userData.username,
+                password:userData.password,fullName:userData.fullName}});
 
             // Store the token in localStorage
-            localStorage.setItem('authToken', token);
+            localStorage.setItem('authToken', accessToken);
+            localStorage.setItem('refreashToken', refreashToken)
 
             // Update the authentication status
             authenticationDispatch({type: 'set-isAuthenticated', payload: true});
-
-            navigate('dashboard');
+            
+            navigate('/dashboard');
         } catch (error) {
             if (error instanceof Error) {
                 navigate('error');
