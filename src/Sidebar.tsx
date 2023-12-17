@@ -1,11 +1,15 @@
 import {NavLink} from 'react-router-dom';
 import HorizonHubSvg from './assets/HorizonHub.svg';
-import { useAuthentication } from './store/hook/useAuthentication';
+import { useAuthentication, useAuthenticationDispatch } from './store/hook/useAuthentication';
+import { useEffect } from 'react';
+import { useUserData } from './store/hook/useUserData';
 
 interface INavLinkOption {
     name: string,
     link: string
 }
+  
+
 
 
 const NavLinkOption = (props: INavLinkOption) =>
@@ -20,8 +24,19 @@ const NavLinkOption = (props: INavLinkOption) =>
     </li>
 
 const Sidebar = () => {
-    const { isAuthenticated } = useAuthentication();
     
+    const authenticationDispatch = useAuthenticationDispatch();
+    
+    useEffect(() => {
+        // Check if authentication token exists in local storage
+        const authToken = localStorage.getItem('authToken');
+        if(authToken){
+            authenticationDispatch({type: 'set-isAuthenticated', payload: true});
+        }
+        
+    }, []); // Run this effect only once during component mount
+    
+    const { isAuthenticated } = useAuthentication();
     return (
         <div
         className='fixed right-0 top-0 z-50 flex h-screen w-[150px] flex-col items-center gap-8 bg-gray-800 px-6 pb-4'>
