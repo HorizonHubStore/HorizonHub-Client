@@ -25,6 +25,7 @@ const Sidebar = () =>
             <NavLinkOption name='מסך בית' link='dashboard'/>
             <NavLinkOption name='התחברות' link='login'/>
             <NavLinkOption name='הרשמה' link='signup'/>
+            <NavLinkOption name='חדשות' link='news'/>
         </ul>
     </div>
 
