@@ -1,8 +1,8 @@
-import Login from "../components/pages/LoginPage.tsx";
+import LoginPage from "../components/pages/LoginPage.tsx";
 
-export const LoginRoute = () =>{
+export const LoginRoute = () => {
     return (
         <div className='bg-[linear-gradient(#141e30, #243b55)] items-center'>
-            <Login/>
+            <LoginPage/>
         </div>)
 }

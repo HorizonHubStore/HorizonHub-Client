@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import {useContext} from 'react';
 import {authenticationContext, authenticationDispatchContext} from "../context/authenticationContext.ts";
 
 export const useAuthentication = () => {

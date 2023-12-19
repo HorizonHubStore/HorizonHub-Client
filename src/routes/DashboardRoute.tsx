@@ -1,6 +1,6 @@
 import DashboardPage from "../components/pages/DashboardPage.tsx";
 
-export const DashboardRoute = () =>{
+export const DashboardRoute = () => {
     return <>
         <DashboardPage/>
     </>

@@ -42,9 +42,10 @@ const Sidebar = () => {
         className='fixed right-0 top-0 z-50 flex h-screen w-[150px] flex-col items-center gap-8 bg-gray-800 px-6 pb-4'>
         <img src={HorizonHubSvg} className="h-36 w-36" alt="HorizonHub Logo"/>
         <ul className='flex flex-col items-center gap-8'>
-            {isAuthenticated && <NavLinkOption name='מסך בית' link='dashboard'/>}
-            {!isAuthenticated && <NavLinkOption name='התחברות' link='login'/>}
-            {!isAuthenticated && <NavLinkOption name='הרשמה' link='signup'/>}
+        {isAuthenticated && <NavLinkOption name='מסך בית' link='dashboard'/>}
+        {!isAuthenticated && <NavLinkOption name='התחברות' link='login'/>}
+        {!isAuthenticated && <NavLinkOption name='הרשמה' link='signup'/>}
+        {isAuthenticated && <NavLinkOption name='חדשות' link='news'/> }
         </ul>
     </div>
     );

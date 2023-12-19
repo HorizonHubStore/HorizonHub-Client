@@ -6,6 +6,7 @@ import {authenticationInitialState} from "../store/initialState/authenticationIn
 import { userDataReducer } from "../store/reducer/userDataReducer.ts";
 import { userDataInitialState } from "../store/initialState/userDataInitialState.ts";
 
+
 const ContextProvider = ({ children }:{children: ReactElement}) => {
      const [authentication, authenticationDispatch] = useReducer(authenticationReducer, authenticationInitialState);
      const [userData, userDataDipatch] = useReducer(userDataReducer,userDataInitialState)
@@ -21,5 +22,5 @@ const ContextProvider = ({ children }:{children: ReactElement}) => {
         </userDataDispatchContext.Provider>
         </userDataContext.Provider>
     );
- };
+};
 export default ContextProvider;

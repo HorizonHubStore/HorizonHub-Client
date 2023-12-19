@@ -5,7 +5,7 @@ import axios from 'axios';
 import {Button, TextField} from "@mui/material";
 import { useUserDataDispatch } from "../../store/hook/useUserData.ts";
 
-const Login = () => {
+const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const userDataDispatch = useUserDataDispatch();
@@ -68,4 +68,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default LoginPage;

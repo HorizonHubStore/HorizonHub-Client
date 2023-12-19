@@ -7,6 +7,7 @@ import ErrorPage from "./components/pages/ErrorPage.tsx";
 import {SignupRoute} from "./routes/SignupRoute.tsx";
 import {LoginRoute} from "./routes/LoginRoute.tsx";
 import {DashboardRoute} from "./routes/DashboardRoute.tsx";
+import {NewsRoute} from "./routes/NewsRoute.tsx";
 
 const router = createBrowserRouter([
     {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
                 element: <SignupRoute/>,
             },
             {
+                path: 'news',
+                element: <NewsRoute/>,
+            },
+            {
                 path: 'error',
                 element: <ErrorPage/>,
             },
@@ -44,6 +49,6 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <RouterProvider router={router} />
+        <RouterProvider router={router}/>
     </React.StrictMode>,
 )
