@@ -8,11 +8,12 @@ export const userDataReducer = (
         // reference
         case 'set-userData': {
             return {
-                username: action.payload.username,
-                password: action.payload.password,
+                userId:action.payload.userId,
                 fullName: action.payload.fullName,
+                imagePath : action.payload.imagePath
             };
         }
+        
         default: {
             throw Error('Unknown action: ' + action?.type);
         }

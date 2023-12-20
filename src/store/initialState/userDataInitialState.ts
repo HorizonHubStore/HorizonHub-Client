@@ -1,11 +1,11 @@
 export interface user {
-    username: string;
-    password: string;
+    userId: string;
     fullName: string;
+    imagePath: string;
 }
 
 export const userDataInitialState: user = {
-    username: "",
-    password: "",
+    userId : "",
     fullName: "",
+    imagePath: "",
 };

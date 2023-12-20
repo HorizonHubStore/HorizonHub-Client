@@ -4,5 +4,5 @@ import { user, userDataInitialState } from "../initialState/userDataInitialState
 export const userDataContext = createContext(userDataInitialState as user);
 
 export const userDataDispatchContext = createContext(
-    null as unknown as Dispatch<{ type: string; payload: {username:'',password:'',fullName:''} }>
+    null as unknown as Dispatch<{ type: string; payload: {userId:string,fullName:string,imagePath:string} }>
 );

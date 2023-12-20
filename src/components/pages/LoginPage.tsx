@@ -18,12 +18,15 @@ const LoginPage = () => {
         const userData = response.data.userData;
         const accessToken = response.data.accessToken;
         const refreashToken = response.data.refreashToken;
+        console.log(userData);
+        
+
         userDataDispatch({
             type: "set-userData",
             payload: {
-                username: userData.username,
-                password: userData.password,
+                userId:userData._id,
                 fullName: userData.fullName,
+                imagePath: userData.picture,
             },
         });
 
