@@ -46,10 +46,13 @@ const DashboardPage = () => {
     return (
         <div
             className='mt-[25vh] p-[40px] translate-x--1/2 translate-y--1/2 bg-[rgba(0,0,0,.6)] box-border rounded-[10px]'>
-            <h2 className='mt-0 mx-0 mb-[30px] p-0 text-white text-center text-4xl'>Welcome to {fullName} Dashboard </h2>
-            <Button className='w-[200px]' variant="contained" onClick={handleLogout}>Logout</Button>
+            <h2 className='mt-0 mx-0 mb-[30px] p-0 text-white text-center text-4xl'>Welcome
+                to {fullName} Dashboard </h2>
+            <form className="flex justify-center items-center flex-col gap-6">
+                <Button className='w-[200px]' variant="contained" onClick={handleLogout}>Logout</Button>
+            </form>
         </div>
-    );
+);
 }
 
 export default DashboardPage;
