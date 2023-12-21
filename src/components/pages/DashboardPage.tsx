@@ -2,7 +2,7 @@ import {Button} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {useAuthenticationDispatch} from "../../store/hook/useAuthentication.ts";
-import { useUserData } from "../../store/hook/useUserData.ts";
+import {useUserData} from "../../store/hook/useUserData.ts";
 
 const DashboardPage = () => {
     const authenticationDispatch = useAuthenticationDispatch();
@@ -14,12 +14,12 @@ const DashboardPage = () => {
         try {
             // Send a POST request to your backend logout endpoint
             const response = await axios.post(
-                (import.meta.env.VITE_SERVER + import.meta.env.VITE_SERVER_LOGOUT_PATH),null,{
+                (import.meta.env.VITE_SERVER + import.meta.env.VITE_SERVER_LOGOUT_PATH), null, {
                     headers: {
                         authorization: `JWT ${authToken} ${refreashToken}`,
-                      // Add other headers as needed
+                        // Add other headers as needed
                     },
-                  });
+                });
 
             // Optionally, handle the response from the backend (e.g., display a success message)
             console.log(response.data);
@@ -40,9 +40,9 @@ const DashboardPage = () => {
             }
         }
     };
-    const { fullName } = useUserData();
+    const {fullName} = useUserData();
 
-    
+
     return (
         <div
             className='mt-[25vh] p-[40px] translate-x--1/2 translate-y--1/2 bg-[rgba(0,0,0,.6)] box-border rounded-[10px]'>
@@ -52,7 +52,7 @@ const DashboardPage = () => {
                 <Button className='w-[200px]' variant="contained" onClick={handleLogout}>Logout</Button>
             </form>
         </div>
-);
+    );
 }
 
 export default DashboardPage;

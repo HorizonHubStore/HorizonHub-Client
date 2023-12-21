@@ -1,17 +1,13 @@
-import {user} from "../initialState/userDataInitialState.ts";
+import {ICurrentUser} from "../initialState/CurrentUserInitialState.ts";
 
 export const userDataReducer = (
-    _authenticationPreviousData: user,
-    action: { type?: string; payload: user }
-): user => {
+    _authenticationPreviousData: ICurrentUser,
+    action: { type?: string; payload: ICurrentUser }
+): ICurrentUser => {
     switch (action.type) {
         // reference
         case 'set-userData': {
-            return {
-                username: action.payload.username,
-                password: action.payload.password,
-                fullName: action.payload.fullName,
-            };
+            return action.payload;
         }
         default: {
             throw Error('Unknown action: ' + action?.type);

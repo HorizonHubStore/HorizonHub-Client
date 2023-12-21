@@ -19,9 +19,9 @@ const LoginPage = () => {
             // Send a POST request to your backend login endpoint
             const response = await axios.post(
                 import.meta.env.VITE_SERVER +
-                    import.meta.env.VITE_SERVER_GOOGLE_LOGIN_PATH,
-                { credentials },
-                { headers: { "Content-Type": "application/json" } }
+                import.meta.env.VITE_SERVER_GOOGLE_LOGIN_PATH,
+                {credentials},
+                {headers: {"Content-Type": "application/json"}}
             );
             handelLoginResponse(response);
         } catch (error) {
@@ -37,9 +37,9 @@ const LoginPage = () => {
             // Send a POST request to your backend login endpoint
             const response = await axios.post(
                 import.meta.env.VITE_SERVER +
-                    import.meta.env.VITE_SERVER_LOGIN_PATH,
-                { username, password },
-                { headers: { "Content-Type": "application/json" } }
+                import.meta.env.VITE_SERVER_LOGIN_PATH,
+                {username, password},
+                {headers: {"Content-Type": "application/json"}}
             );
 
             handelLoginResponse(response);
@@ -75,7 +75,8 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="mt-[25vh] p-[40px] translate-x--1/2 translate-y--1/2 bg-[rgba(0,0,0,.6)] box-border rounded-[10px]">
+        <div
+            className="mt-[25vh] p-[40px] translate-x--1/2 translate-y--1/2 bg-[rgba(0,0,0,.6)] box-border rounded-[10px]">
             <h2 className="mt-0 mx-0 mb-[30px] p-0 text-white text-center text-4xl">
                 Log In
             </h2>
