@@ -7,16 +7,14 @@ import axios from "axios";
 
 const UserProfile: React.FC = () => {
     const { fullName, imagePath, userId } = useUserData();
-    console.log(fullName, imagePath, userId );
-    
 
     // State for tracking whether the user is in edit mode
     const [editMode, setEditMode] = useState(false);
+
     const userDataDispatch = useUserDataDispatch();
     const urlImage = import.meta.env.VITE_SERVER + "/" + imagePath;
     const [profileImage, setProfileImage] = useState(urlImage);
-    console.log(profileImage);
-    
+
     // State for storing the selected image file
     const [selectedImage, setSelectedImage] = useState<string | undefined>(
         undefined
@@ -51,7 +49,9 @@ const UserProfile: React.FC = () => {
                 },
             });
 
-            setProfileImage(import.meta.env.VITE_SERVER + "/" + response.data.filePath)
+            setProfileImage(
+                import.meta.env.VITE_SERVER + "/" + response.data.filePath
+            );
             // Set the new image URL in the local state
             setEditMode(false);
         } catch (error) {
@@ -73,33 +73,48 @@ const UserProfile: React.FC = () => {
         }
     };
 
-
     return (
-        <div>
-            <div>
-                <h2 className="mt-0 mx-0 mb-[30px] p-0 text-white text-center text-4xl">
-                    Welcome to {fullName} Dashboard
-                </h2>
+        <div className="bg-gray-800 text-white p-6 rounded-lg shadow-md">
+            <h2 className="text-4xl font-semibold mb-4">Dashboard</h2>
+            <div className="flex flex-col items-center space-y-4">
+                <h3 className="text-2xl font-semibold">{fullName}</h3>
+                {editMode ? (
+                    <div className="flex items-center space-x-4">
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            className="border-2 border-gray-300 p-2 rounded-md"
+                        />
+                        <button
+                            onClick={handleUpdateImage}
+                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                        >
+                            Update Image
+                        </button>
+                        <button
+                            onClick={() => setEditMode(false)}
+                            className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                ) : (
+                    <div className="flex items-center space-x-4">
+                        <img
+                            src={profileImage}
+                            alt="User"
+                            className="rounded-full h-24 w-24 object-cover"
+                        />
+                        <button
+                            onClick={() => setEditMode(true)}
+                            className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+                        >
+                            Edit Image
+                        </button>
+                    </div>
+                )}
             </div>
-            <h2>User Profile</h2>
-            {editMode ? (
-                <div>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                    />
-                    <button onClick={handleUpdateImage}>Update Image</button>
-                    <button onClick={() => setEditMode(false)}>Cancel</button>
-                </div>
-            ) : (
-                <div>
-                    <img src={profileImage} alt="User" width="150" height="150" />
-                    <button onClick={() => setEditMode(true)}>
-                        Edit Image
-                    </button>
-                </div>
-            )}
         </div>
     );
 };

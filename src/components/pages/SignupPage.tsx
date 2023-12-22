@@ -17,10 +17,11 @@ const SignupPage = () => {
                 setError('Username and password must be at least 5 characters long.');
                 return;
             }
+
             // Send a POST request to your backend login endpoint
             const response = await axios.post(
                 (import.meta.env.VITE_SERVER + import.meta.env.VITE_SERVER_SIGNUP_PATH),
-                {username, password,fullName},
+                {username, password, fullName},
                 {headers: {'Content-Type': 'application/json'}}
             );
 
@@ -29,9 +30,13 @@ const SignupPage = () => {
 
             navigate('/login');
         } catch (error) {
-            if (error instanceof Error) {
-                navigate('error');
-                throw Error(`Login failed: ${error.message}`);
+            if (axios.isAxiosError(error)) {
+                // Axios error (error from the server)
+                const serverError = error.response?.data?.error || 'Unknown error occurred.';
+                setError(serverError);
+            } else if (error instanceof Error) {
+                // Other errors
+                setError(`Signup failed: ${error.message}`);
             }
         }
     };
@@ -41,7 +46,7 @@ const SignupPage = () => {
             className='mt-[25vh] p-[40px] translate-x--1/2 translate-y--1/2 bg-[rgba(0,0,0,.6)] box-border rounded-[10px]'>
             <h2 className='mt-0 mx-0 mb-[30px] p-0 text-white text-center text-4xl'>Sign Up</h2>
             <form className='flex justify-center items-center flex-col gap-6'>
-            <TextField className='w-[400px]' label="Username" variant="outlined"
+                <TextField className='w-[400px]' label="Full Name" variant="outlined"
                            onChange={(event: ChangeEvent<HTMLInputElement>) => {
                                setFullName(event.target.value);
                            }}/>
