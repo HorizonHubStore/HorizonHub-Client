@@ -9,6 +9,7 @@ export const userDataReducer = (
         case 'set-userData': {
             return action.payload;
         }
+        
         default: {
             throw Error('Unknown action: ' + action?.type);
         }

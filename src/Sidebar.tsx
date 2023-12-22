@@ -1,13 +1,14 @@
 import {NavLink} from 'react-router-dom';
 import HorizonHubSvg from './assets/HorizonHub.svg';
-import {useAuthentication, useAuthenticationDispatch} from './store/hook/useAuthentication';
-import {useEffect} from 'react';
+import { useAuthentication, useAuthenticationDispatch } from './store/hook/useAuthentication';
+import { useEffect } from 'react';
+
 
 interface INavLinkOption {
     name: string,
     link: string
 }
-
+  
 const NavLinkOption = (props: INavLinkOption) =>
     <li className='px-4 py-3'>
         <NavLink

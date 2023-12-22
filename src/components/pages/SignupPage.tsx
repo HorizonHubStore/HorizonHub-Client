@@ -17,6 +17,7 @@ const SignupPage = () => {
                 setError('Username and password must be at least 5 characters long.');
                 return;
             }
+
             // Send a POST request to your backend login endpoint
             const response = await axios.post(
                 (import.meta.env.VITE_SERVER + import.meta.env.VITE_SERVER_SIGNUP_PATH),
@@ -29,9 +30,13 @@ const SignupPage = () => {
 
             navigate('/login');
         } catch (error) {
-            if (error instanceof Error) {
-                navigate('error');
-                throw Error(`Login failed: ${error.message}`);
+            if (axios.isAxiosError(error)) {
+                // Axios error (error from the server)
+                const serverError = error.response?.data?.error || 'Unknown error occurred.';
+                setError(serverError);
+            } else if (error instanceof Error) {
+                // Other errors
+                setError(`Signup failed: ${error.message}`);
             }
         }
     };
