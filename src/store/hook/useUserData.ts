@@ -1,5 +1,5 @@
-import { useContext } from 'react';
-import {userDataContext,userDataDispatchContext} from "../context/userDataContext.ts";
+import {useContext} from 'react';
+import {userDataContext, userDataDispatchContext} from "../context/userDataContext.ts";
 
 export const useUserData = () => {
     return useContext(userDataContext);

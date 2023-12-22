@@ -1,8 +1,8 @@
 import {createContext, Dispatch} from "react";
-import { user, userDataInitialState } from "../initialState/userDataInitialState.ts";
+import {CurrentUserInitialState, ICurrentUser} from "../initialState/CurrentUserInitialState.ts";
 
-export const userDataContext = createContext(userDataInitialState as user);
+export const userDataContext = createContext(CurrentUserInitialState as ICurrentUser);
 
 export const userDataDispatchContext = createContext(
-    null as unknown as Dispatch<{ type: string; payload: {userId:string,fullName:string,imagePath:string} }>
+    null as unknown as Dispatch<{ type: string; payload: ICurrentUser }>
 );

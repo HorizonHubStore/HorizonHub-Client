@@ -1,11 +1,11 @@
-import { ChangeEvent, useState } from "react";
-import { useAuthenticationDispatch } from "../../store/hook/useAuthentication.ts";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { Button, TextField } from "@mui/material";
-import { useUserDataDispatch } from "../../store/hook/useUserData.ts";
-import { GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
+import {ChangeEvent, useState} from "react";
+import {useAuthenticationDispatch} from "../../store/hook/useAuthentication.ts";
+import {Link, redirect, useNavigate} from "react-router-dom";
+import axios, {AxiosResponse} from "axios";
+import {Button, TextField} from "@mui/material";
+import {useUserDataDispatch} from "../../store/hook/useUserData.ts";
+import {GoogleLogin} from "@react-oauth/google";
+import {jwtDecode, JwtPayload} from "jwt-decode";
 
 const LoginPage = () => {
     const [username, setUsername] = useState("");
@@ -14,7 +14,44 @@ const LoginPage = () => {
     const authenticationDispatch = useAuthenticationDispatch();
     const navigate = useNavigate();
 
-    const handelLoginResponse = (response: any) => {
+    const handelGoogleLogin = async (credentials: JwtPayload) => {
+        try {
+            // Send a POST request to your backend login endpoint
+            const response = await axios.post(
+                import.meta.env.VITE_SERVER +
+                import.meta.env.VITE_SERVER_GOOGLE_LOGIN_PATH,
+                {credentials},
+                {headers: {"Content-Type": "application/json"}}
+            );
+            handelLoginResponse(response);
+        } catch (error) {
+            if (error instanceof Error) {
+                navigate("error");
+                throw Error(`Login failed: ${error.message}`);
+            }
+        }
+    };
+
+    const handleLogin = async () => {
+        try {
+            // Send a POST request to your backend login endpoint
+            const response = await axios.post(
+                import.meta.env.VITE_SERVER +
+                import.meta.env.VITE_SERVER_LOGIN_PATH,
+                {username, password},
+                {headers: {"Content-Type": "application/json"}}
+            );
+
+            handelLoginResponse(response);
+        } catch (error) {
+            if (error instanceof Error) {
+                navigate("error");
+                throw Error(`Login failed: ${error.message}`);
+            }
+        }
+    };
+
+    const handelLoginResponse = (response: AxiosResponse) => {
         const userData = response.data.userData;
         const accessToken = response.data.accessToken;
         const refreashToken = response.data.refreashToken;
@@ -35,50 +72,14 @@ const LoginPage = () => {
         localStorage.setItem("refreashToken", refreashToken);
 
         // Update the authentication status
-        authenticationDispatch({ type: "set-isAuthenticated", payload: true });
+        authenticationDispatch({type: "set-isAuthenticated", payload: true});
 
         navigate("/dashboard");
     };
 
-    const handelGoogleLogin = async (credentials: any) => {
-        try {
-            // Send a POST request to your backend login endpoint
-            const response = await axios.post(
-                import.meta.env.VITE_SERVER +
-                    import.meta.env.VITE_SERVER_GOOGLE_LOGIN_PATH,
-                { credentials },
-                { headers: { "Content-Type": "application/json" } }
-            );
-            handelLoginResponse(response);
-        } catch (error) {
-            if (error instanceof Error) {
-                navigate("error");
-                throw Error(`Login failed: ${error.message}`);
-            }
-        }
-    };
-
-    const handleLogin = async () => {
-        try {
-            // Send a POST request to your backend login endpoint
-            const response = await axios.post(
-                import.meta.env.VITE_SERVER +
-                    import.meta.env.VITE_SERVER_LOGIN_PATH,
-                { username, password },
-                { headers: { "Content-Type": "application/json" } }
-            );
-
-            handelLoginResponse(response);
-        } catch (error) {
-            if (error instanceof Error) {
-                navigate("error");
-                throw Error(`Login failed: ${error.message}`);
-            }
-        }
-    };
-
     return (
-        <div className="mt-[25vh] p-[40px] translate-x--1/2 translate-y--1/2 bg-[rgba(0,0,0,.6)] box-border rounded-[10px]">
+        <div
+            className="mt-[25vh] p-[40px] translate-x--1/2 translate-y--1/2 bg-[rgba(0,0,0,.6)] box-border rounded-[10px]">
             <h2 className="mt-0 mx-0 mb-[30px] p-0 text-white text-center text-4xl">
                 Log In
             </h2>
@@ -108,14 +109,19 @@ const LoginPage = () => {
                     Submit
                 </Button>
                 <GoogleLogin
-                    onSuccess={(res: any) => {
-                        const decodedRes = jwtDecode(res.credential);
-                        handelGoogleLogin(decodedRes);
+                    onSuccess={(credentialResponse) => {
+                        if (credentialResponse.credential) {
+                            const decodedRes = jwtDecode(credentialResponse.credential);
+                            handelGoogleLogin(decodedRes);
+                        } else
+                            redirect("error");
                     }}
                     onError={() => {
                         console.log("login failed");
                     }}
                 ></GoogleLogin>
+                <Link dir='rtl' to={'../signup'} className='text-blue-400 hover:underline'>אם אין לך חשבון לחץ כאן
+                    להרשם!</Link>
             </form>
         </div>
     );
