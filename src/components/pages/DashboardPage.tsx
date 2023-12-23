@@ -3,6 +3,7 @@ import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {useAuthenticationDispatch} from "../../store/hook/useAuthentication.ts";
 import UserProfile from "../dashboard/UserProfile.tsx";
+import PostForm from "../forms/PostForm.tsx";
 
 const DashboardPage = () => {
     const authenticationDispatch = useAuthenticationDispatch();
@@ -17,7 +18,6 @@ const DashboardPage = () => {
                 (import.meta.env.VITE_SERVER + import.meta.env.VITE_SERVER_LOGOUT_PATH), null, {
                     headers: {
                         authorization: `JWT ${authToken} ${refreashToken}`,
-                        // Add other headers as needed
                     },
                 });
 
@@ -47,6 +47,7 @@ const DashboardPage = () => {
             className='mt-[25vh] p-[40px] translate-x--1/2 translate-y--1/2 bg-[rgba(0,0,0,.6)] box-border rounded-[10px]'>
             <UserProfile></UserProfile>
             <Button className='w-[200px]' variant="contained" onClick={handleLogout}>Logout</Button>
+            <PostForm></PostForm>
         </div>
     );
 }
