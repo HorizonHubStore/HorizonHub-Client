@@ -29,6 +29,7 @@ const Sidebar = () => {
         const authToken = localStorage.getItem('authToken');
         if (authToken) {
             authenticationDispatch({type: 'set-isAuthenticated', payload: true});
+            
         }
 
     }, []); // Run this effect only once during component mount
