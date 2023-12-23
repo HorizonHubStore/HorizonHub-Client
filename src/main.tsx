@@ -8,6 +8,7 @@ import {SignupRoute} from "./routes/SignupRoute.tsx";
 import {LoginRoute} from "./routes/LoginRoute.tsx";
 import {DashboardRoute} from "./routes/DashboardRoute.tsx";
 import {NewsRoute} from "./routes/NewsRoute.tsx";
+import { GamesStoreRoute } from './routes/GamesStoreRoute.tsx';
 
 const router = createBrowserRouter([
     {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
             {
                 path: 'news',
                 element: <NewsRoute/>,
+            },
+            {
+                path: 'gamesStore',
+                element: <GamesStoreRoute/>,
             },
             {
                 path: 'error',

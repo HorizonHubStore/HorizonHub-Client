@@ -43,6 +43,7 @@ const Sidebar = () => {
                 {!isAuthenticated && <NavLinkOption name='התחברות' link='login'/>}
                 {!isAuthenticated && <NavLinkOption name='הרשמה' link='signup'/>}
                 {isAuthenticated && <NavLinkOption name='חדשות' link='news'/>}
+                {isAuthenticated && <NavLinkOption name='חנות' link='gamesStore'/>}
             </ul>
         </div>
     );
