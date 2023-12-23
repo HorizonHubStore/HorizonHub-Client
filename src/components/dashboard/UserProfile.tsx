@@ -27,7 +27,7 @@ const UserProfile: React.FC = () => {
                 console.error("Please select an image file.");
                 return;
             }
-
+            
             // Send a request to update the user's image
             const response = await axios.put(
                 import.meta.env.VITE_SERVER +
@@ -39,7 +39,7 @@ const UserProfile: React.FC = () => {
                     },
                 }
             );
-
+            
             userDataDispatch({
                 type: "set-userData",
                 payload: {
@@ -52,6 +52,7 @@ const UserProfile: React.FC = () => {
             setProfileImage(
                 import.meta.env.VITE_SERVER + "/" + response.data.filePath
             );
+            
             // Set the new image URL in the local state
             setEditMode(false);
         } catch (error) {
