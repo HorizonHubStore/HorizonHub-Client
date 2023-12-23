@@ -1,11 +1,11 @@
 export interface ICurrentUser {
-    userName: string;
-    password: string;
+    imagePath: string;
+    userId: string;
     fullName: string;
 }
 
 export const CurrentUserInitialState: ICurrentUser = {
-    userName: "",
-    password: "",
+    imagePath: "",
+    userId: "",
     fullName: "",
 };
