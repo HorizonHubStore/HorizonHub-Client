@@ -12,7 +12,7 @@ interface PostData {
 }
 
 const PostForm: React.FC = () => {
-  const { fullName , userId} = useUserData();
+  const { fullName, userId } = useUserData();
   const [postData, setPostData] = useState<PostData>({
     game: {
       name: "",
@@ -61,7 +61,7 @@ const PostForm: React.FC = () => {
       const formData = new FormData();
       formData.append("name", postData.game.name);
       formData.append("creatorName", fullName);
-      formData.append("creatorUserId",userId)
+      formData.append("creatorUserId", userId);
 
       if (selectedPicture) {
         formData.append("picture", selectedPicture);
@@ -94,8 +94,8 @@ const PostForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded shadow-md">
-      <h2 className="text-2xl font-semibold mb-6">Add new post</h2>
+    <div className="max-w-md mx-auto mt-8 p-6 bg-gray-800 rounded shadow-md">
+      <h2 className="text-2xl font-semibold mb-6">Create new post</h2>
       <form onSubmit={handleSubmit}>
         <label className="block mb-4">
           <span className="text-gray-700">Game Name:</span>
@@ -109,7 +109,7 @@ const PostForm: React.FC = () => {
         </label>
 
         <label className="block mb-4">
-          <span className="text-gray-700">Game Picture URL:</span>
+          <span className="text-gray-700">Game Picture:</span>
           <input
             className="form-input mt-1 block w-full"
             type="file"
@@ -122,7 +122,7 @@ const PostForm: React.FC = () => {
         </label>
 
         <label className="block mb-4">
-          <span className="text-gray-700">Game File URL:</span>
+          <span className="text-gray-700">Game File:</span>
           <input
             className="form-input mt-1 block w-full"
             type="file"

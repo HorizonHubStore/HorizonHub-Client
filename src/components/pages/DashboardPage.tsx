@@ -46,8 +46,13 @@ const DashboardPage = () => {
         <div
             className='mt-[25vh] p-[40px] translate-x--1/2 translate-y--1/2 bg-[rgba(0,0,0,.6)] box-border rounded-[10px]'>
             <UserProfile></UserProfile>
-            <Button className='w-[200px]' variant="contained" onClick={handleLogout}>Logout</Button>
             <PostForm></PostForm>
+            <div className="flex justify-center">
+            <Button className='w-[200px]' variant="contained" onClick={handleLogout}>
+                Logout
+            </Button>
+            </div>
+
         </div>
     );
 }

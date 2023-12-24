@@ -38,6 +38,7 @@ const UserProfile: React.FC = () => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
+
           },
         }
       );
@@ -72,41 +73,42 @@ const UserProfile: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-800 text-white p-6 rounded-lg shadow-md">
+    <div className="bg-gray-800 text-white p-6 rounded-lg shadow-md flex flex-col items-center">
       <h2 className="text-4xl font-semibold mb-4">Dashboard</h2>
       <div className="flex flex-col items-center space-y-4">
         <h3 className="text-2xl font-semibold">{fullName}</h3>
         {editMode ? (
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-col items-center space-y-2">
             <input
               type="file"
               accept="image/*"
               onChange={handleFileChange}
               className="border-2 border-gray-300 p-2 rounded-md"
             />
+            <input type="hidden" name="userId" value={userId} />
             <button
               onClick={handleUpdateImage}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+              className="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600"
             >
               Update Image
             </button>
             <button
               onClick={() => setEditMode(false)}
-              className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+              className="bg-gray-500 text-white px-3 py-2 rounded-md hover:bg-gray-600"
             >
               Cancel
             </button>
           </div>
         ) : (
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-col items-center space-y-2">
             <img
               src={profileImage}
               alt="User"
-              className="rounded-full h-24 w-24 object-cover"
+              className="rounded-full h-32 w-32 object-cover"
             />
             <button
               onClick={() => setEditMode(true)}
-              className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+              className="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600"
             >
               Edit Image
             </button>
@@ -115,6 +117,6 @@ const UserProfile: React.FC = () => {
       </div>
     </div>
   );
-};
+}  
 
 export default UserProfile;
