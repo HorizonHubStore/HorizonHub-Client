@@ -7,7 +7,7 @@ interface PostData {
   pictureUrl: string;
   gameFileUrl: string;
   creatorName: string;
-  fileSize:string;
+  fileSize: string;
   // other fields...
 }
 
@@ -63,6 +63,28 @@ const PostList: React.FC = () => {
     return "Unknown";
   };
 
+  const handleDelete = async (postId: string) => {
+    const authToken = localStorage.getItem('authToken');
+    const refreashToken = localStorage.getItem("refreashToken")
+    try {
+      await axios.delete(
+        import.meta.env.VITE_SERVER +
+          import.meta.env.VITE_SERVER_DELETE_POST_PATH +
+          `/${postId}`, {
+            headers: {
+                authorization: `JWT ${authToken} ${refreashToken}`,
+            },
+        }
+          
+      );
+
+      // Remove the deleted post from the state
+      setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
   return (
     <div className="box-border">
       <h2 className="mt-0 mx-0 mb-8 p-0 text-white text-center text-4xl">
@@ -89,6 +111,12 @@ const PostList: React.FC = () => {
                   Download Game File
                 </a>{" "}
                 <span className="text-gray-500">({post.fileSize || "Unknown"})</span>
+                <button
+                  onClick={() => handleDelete(post._id)}
+                  className="mt-2 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                >
+                  Delete
+                </button>
               </div>
             </div>
           </div>
