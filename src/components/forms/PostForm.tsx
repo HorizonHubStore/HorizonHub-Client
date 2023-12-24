@@ -12,7 +12,7 @@ interface PostData {
 }
 
 const PostForm: React.FC = () => {
-  const { fullName } = useUserData();
+  const { fullName , userId} = useUserData();
   const [postData, setPostData] = useState<PostData>({
     game: {
       name: "",
@@ -61,6 +61,7 @@ const PostForm: React.FC = () => {
       const formData = new FormData();
       formData.append("name", postData.game.name);
       formData.append("creatorName", fullName);
+      formData.append("creatorUserId",userId)
 
       if (selectedPicture) {
         formData.append("picture", selectedPicture);

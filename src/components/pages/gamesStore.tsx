@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useUserData } from "../../store/hook/useUserData.ts";
 
 interface PostData {
   _id: string;
   name: string;
   pictureUrl: string;
   gameFileUrl: string;
-  creatorName: string;
+  creatorUserId: string; // Assuming there's a userId associated with each post
+  creatorName: string; // Add the creatorName field
   fileSize: string;
   // other fields...
 }
 
 const PostList: React.FC = () => {
+  const { userId } = useUserData(); // Assuming you have a hook to get user data
   const [posts, setPosts] = useState<PostData[]>([]);
 
   useEffect(() => {
@@ -64,18 +67,19 @@ const PostList: React.FC = () => {
   };
 
   const handleDelete = async (postId: string) => {
-    const authToken = localStorage.getItem('authToken');
-    const refreashToken = localStorage.getItem("refreashToken")
+    const authToken = localStorage.getItem("authToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+
     try {
       await axios.delete(
         import.meta.env.VITE_SERVER +
           import.meta.env.VITE_SERVER_DELETE_POST_PATH +
-          `/${postId}`, {
-            headers: {
-                authorization: `JWT ${authToken} ${refreashToken}`,
-            },
+          `/${postId}`,
+        {
+          headers: {
+            authorization: `JWT ${authToken} ${refreshToken}`,
+          },
         }
-          
       );
 
       // Remove the deleted post from the state
@@ -110,13 +114,20 @@ const PostList: React.FC = () => {
                 >
                   Download Game File
                 </a>{" "}
-                <span className="text-gray-500">({post.fileSize || "Unknown"})</span>
-                <button
-                  onClick={() => handleDelete(post._id)}
-                  className="mt-2 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                >
-                  Delete
-                </button>
+                <span className="text-gray-500">
+                  ({post.fileSize || "Unknown"})
+                </span>
+
+                {post.creatorUserId === userId && ( // Check if the current user is the creator
+                  <div className="mt-2">
+                    <button
+                      onClick={() => handleDelete(post._id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
