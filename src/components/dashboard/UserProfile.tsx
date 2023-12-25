@@ -6,6 +6,8 @@ import {
 import axios from "axios";
 
 const UserProfile: React.FC = () => {
+  const authToken = localStorage.getItem("authToken");
+  const refreshToken = localStorage.getItem("refreshToken");
   const { fullName, imagePath, userId } = useUserData();
 
   // State for tracking whether the user is in edit mode
@@ -38,6 +40,7 @@ const UserProfile: React.FC = () => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            authorization: `JWT ${authToken} ${refreshToken}`,
 
           },
         }

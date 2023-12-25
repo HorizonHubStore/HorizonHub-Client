@@ -107,8 +107,6 @@ const PostList: React.FC = () => {
 
     const handleUpdate = async (postId: string) => {
         try {
-            const authToken = localStorage.getItem("authToken");
-            const refreshToken = localStorage.getItem("refreshToken");
 
             await axios.put(
                 import.meta.env.VITE_SERVER +
