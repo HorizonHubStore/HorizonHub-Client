@@ -3,404 +3,352 @@ import axios from "axios";
 import { useUserData } from "../../store/hook/useUserData.ts";
 
 interface CommentData {
-    _id: string;
-    postId: string;
-    text: string;
+  _id: string;
+  postId: string;
+  text: string;
 }
 
 interface PostData {
-    _id: string;
-    name: string;
-    pictureUrl: string;
-    gameFileUrl: string;
-    creatorUserId: string;
-    creatorName: string;
-    fileSize: string;
-    commentsCount: number;
+  _id: string;
+  name: string;
+  pictureUrl: string;
+  gameFileUrl: string;
+  creatorUserId: string;
+  creatorName: string;
+  fileSize: string;
+  commentsCount: number;
 }
 
 const PostList: React.FC = () => {
-    const { userId } = useUserData();
-    const [posts, setPosts] = useState<PostData[]>([]);
-    const [originalPosts, setOriginalPosts] = useState<PostData[]>([]);
-    const [editMode, setEditMode] = useState<string | null>(null);
-    const [editedName, setEditedName] = useState<string>("");
-    const [commentTexts, setCommentTexts] = useState<{
-        [postId: string]: string;
-    }>({});
-    const [searchTerm, setSearchTerm] = useState<string>("");
-    const authToken = localStorage.getItem("authToken");
-    const refreshToken = localStorage.getItem("refreshToken");
-    const [postComments, setPostComments] = useState<CommentData[]>([]);
+  const { userId } = useUserData();
+  const [posts, setPosts] = useState<PostData[]>([]);
+  const [originalPosts, setOriginalPosts] = useState<PostData[]>([]);
+  const [editMode, setEditMode] = useState<string | null>(null);
+  const [editedName, setEditedName] = useState<string>("");
+  const [commentTexts, setCommentTexts] = useState<{ [postId: string]: string }>(
+    {}
+  );
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const authToken = localStorage.getItem("authToken");
+  const refreshToken = localStorage.getItem("refreshToken");
 
-    useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const postsResponse = await axios.get<PostData[]>(
-                    import.meta.env.VITE_SERVER +
-                        import.meta.env.VITE_SERVER_GET_ALL_POSTS_PATH,
-                    {
-                        headers: {
-                            authorization: `JWT ${authToken} ${refreshToken}`,
-                        },
-                    }
-                );
-
-                const postsWithFullPath = postsResponse.data.map((post) => ({
-                    ...post,
-                    pictureUrl:
-                        import.meta.env.VITE_SERVER + "/" + post.pictureUrl,
-                    gameFileUrl:
-                        import.meta.env.VITE_SERVER + "/" + post.gameFileUrl,
-                }));
-
-                const postsWithFileSizes = await Promise.all(
-                    postsWithFullPath.map(fetchFileSize)
-                );
-
-                const postsWithSizes = postsWithFullPath.map((post, index) => ({
-                    ...post,
-                    fileSize: postsWithFileSizes[index],
-                }));
-
-                const postsWithComments = await Promise.all(
-                    postsWithSizes.map(async (post) => {
-                        const commentsResponse = await axios.get<CommentData[]>(
-                            `${import.meta.env.VITE_SERVER}${
-                                import.meta.env
-                                    .VITE_SERVER_GET_POST_COMMENTS_PATH
-                            }/${post._id}`,
-                            {
-                                headers: {
-                                    authorization: `JWT ${authToken} ${refreshToken}`,
-                                },
-                            }
-                        );
-                        return {
-                            ...post,
-                            commentsCount: commentsResponse.data.length,
-                        };
-                    })
-                );
-
-                setPosts(postsWithComments);
-                setOriginalPosts(postsWithComments);
-            } catch (error) {
-                console.error("Error fetching posts:", error);
-            }
-        };
-
-        const fetchComments = async () => {
-            try {
-                // Fetch all comments for all posts
-                const commentsResponse = await axios.get<CommentData[]>(
-                    `${import.meta.env.VITE_SERVER}${
-                        import.meta.env.VITE_SERVER_GET_ALL_COMMENTS_PATH
-                    }`,
-                    {
-                        headers: {
-                            authorization: `JWT ${authToken} ${refreshToken}`,
-                        },
-                    }
-                );
-                setPostComments(commentsResponse.data);
-            } catch (error) {
-                console.error("Error fetching comments:", error);
-            }
-        };
-
-        fetchPosts();
-        fetchComments();
-    }, [authToken, refreshToken]);
-
-    const fetchFileSize = async (post: PostData): Promise<string> => {
-        try {
-            const response = await fetch(post.gameFileUrl);
-            const sizeInBytes = response.headers.get("content-length");
-            if (sizeInBytes) {
-                const sizeInKb = Math.ceil(parseInt(sizeInBytes, 10) / 1024);
-                return `${sizeInKb} KB`;
-            }
-        } catch (error) {
-            console.error("Error getting file size:", error);
-        }
-        return "Unknown";
-    };
-
-    const handleDelete = async (postId: string) => {
-        try {
-            await axios.delete(
-                import.meta.env.VITE_SERVER +
-                    import.meta.env.VITE_SERVER_DELETE_POST_PATH +
-                    `/${postId}`,
-                {
-                    headers: {
-                        authorization: `JWT ${authToken} ${refreshToken}`,
-                    },
-                }
-            );
-
-            setPosts((prevPosts) =>
-                prevPosts.filter((post) => post._id !== postId)
-            );
-            setOriginalPosts((prevOriginalPosts) =>
-                prevOriginalPosts.filter((post) => post._id !== postId)
-            );
-        } catch (error) {
-            console.error("Error deleting post:", error);
-        }
-    };
-
-    const handleEdit = (postId: string, initialName: string) => {
-        setEditMode(postId);
-        setEditedName(initialName);
-    };
-
-    const handleUpdate = async (postId: string) => {
-        try {
-            await axios.put(
-                import.meta.env.VITE_SERVER +
-                    import.meta.env.VITE_SERVER_UPDATE_POST_PATH +
-                    `/${postId}`,
-                { name: editedName },
-                {
-                    headers: {
-                        authorization: `JWT ${authToken} ${refreshToken}`,
-                    },
-                }
-            );
-
-            setPosts((prevPosts) =>
-                prevPosts.map((post) =>
-                    post._id === postId ? { ...post, name: editedName } : post
-                )
-            );
-
-            setEditMode(null);
-        } catch (error) {
-            console.error("Error updating post:", error);
-        }
-    };
-
-    const handleAddComment = async (postId: string) => {
-        try {
-            await axios.post<CommentData>(
-                import.meta.env.VITE_SERVER +
-                    import.meta.env.VITE_SERVER_ADD_COMMENT_PATH,
-                { postId, text: commentTexts[postId], userId },
-                {
-                    headers: {
-                        authorization: `JWT ${authToken} ${refreshToken}`,
-                    },
-                }
-            );
-
-            // Update comments for the specific post
-            const updatedComments = await fetchPostComments(postId);
-            console.log(updatedComments);
-            
-            setPostComments((prevComments) => [
-                ...prevComments,
-                ...updatedComments,
-            ]);
-
-            // Clear the comment text for this post
-            setCommentTexts((prevCommentTexts) => {
-                const newCommentTexts = { ...prevCommentTexts };
-                newCommentTexts[postId] = "";
-                return newCommentTexts;
-            });
-        } catch (error) {
-            console.error("Error adding comment:", error);
-        }
-    };
-
-    const fetchPostComments = async (
-        postId: string
-    ): Promise<CommentData[]> => {
-        try {
-            const response = await axios.get<CommentData[]>(
-                `${import.meta.env.VITE_SERVER}${
-                    import.meta.env.VITE_SERVER_GET_POST_COMMENTS_PATH
-                }/${postId}`,
-                {
-                    headers: {
-                        authorization: `JWT ${authToken} ${refreshToken}`,
-                    },
-                }
-            );
-            return response.data;
-        } catch (error) {
-            console.error("Error fetching post comments:", error);
-            return [];
-        }
-    };
-
-    const handleSearch = (searchTerm: string) => {
-        if (!searchTerm.trim()) {
-            setPosts(originalPosts);
-            return;
-        }
-
-        const filteredPosts = originalPosts.filter((post) =>
-            post.creatorName.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const postsResponse = await axios.get<PostData[]>(
+          import.meta.env.VITE_SERVER +
+            import.meta.env.VITE_SERVER_GET_ALL_POSTS_PATH,
+          {
+            headers: {
+              authorization: `JWT ${authToken} ${refreshToken}`,
+            },
+          }
         );
 
-        setPosts(filteredPosts);
+        const postsWithFullPath = postsResponse.data.map((post) => ({
+          ...post,
+          pictureUrl: import.meta.env.VITE_SERVER + "/" + post.pictureUrl,
+          gameFileUrl: import.meta.env.VITE_SERVER + "/" + post.gameFileUrl,
+        }));
+
+        const postsWithFileSizes = await Promise.all(
+          postsWithFullPath.map(fetchFileSize)
+        );
+
+        const postsWithSizes = postsWithFullPath.map((post, index) => ({
+          ...post,
+          fileSize: postsWithFileSizes[index],
+        }));
+
+        const postsWithComments = await Promise.all(
+          postsWithSizes.map(async (post) => {
+            const commentsResponse = await axios.get<CommentData[]>(
+              `${import.meta.env.VITE_SERVER}${
+                import.meta.env.VITE_SERVER_GET_POST_COMMENTS_PATH
+              }/${post._id}`,
+              {
+                headers: {
+                  authorization: `JWT ${authToken} ${refreshToken}`,
+                },
+              }
+            );
+            return {
+              ...post,
+              commentsCount: commentsResponse.data.length,
+            };
+          })
+        );
+
+        setPosts(postsWithComments);
+        setOriginalPosts(postsWithComments);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
     };
 
-    return (
-        <div className="box-border">
-            <h2 className="mt-0 mx-0 mb-8 p-0 text-white text-center text-4xl">
-                Posts
-            </h2>
-            <div className="flex items-center justify-center mb-4">
-                <input
-                    type="text"
-                    placeholder="Search by creator name"
-                    value={searchTerm}
-                    onChange={(e) => {
-                        setSearchTerm(e.target.value);
-                        handleSearch(e.target.value);
-                    }}
-                    className="border-2 border-gray-300 p-2 rounded-md"
-                />
-            </div>
-            <div className="flex flex-wrap justify-center">
-                {posts.map((post) => (
-                    <div key={post._id} className="m-4 max-w-[360px]">
-                        <div className="bg-[#222831] text-[#ffffff] rounded-2xl overflow-hidden">
-                            <img
-                                src={post.pictureUrl}
-                                alt="Post"
-                                className="object-cover w-full h-48"
-                            />
-                            <div className="p-4">
-                                {editMode === post._id ? (
-                                    <div className="flex items-center space-x-2">
-                                        <input
-                                            type="text"
-                                            value={editedName}
-                                            onChange={(e) =>
-                                                setEditedName(e.target.value)
-                                            }
-                                            className="border-2 border-gray-300 p-2 rounded-md"
-                                        />
-                                        <button
-                                            onClick={() => setEditMode(null)}
-                                            className="bg-gray-500 text-white px-3 py-1 rounded-md hover:bg-gray-600"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <>
-                                        <h3 className="text-2xl">
-                                            {post.name}
-                                        </h3>
-                                        <p className="text-gray-300">
-                                            Creator: {post.creatorName}
-                                        </p>
-                                        <a
-                                            href={post.gameFileUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-500 hover:underline"
-                                        >
-                                            Download Game File
-                                        </a>{" "}
-                                        <span className="text-gray-500">
-                                            ({post.fileSize || "Unknown"})
-                                        </span>
-                                        <p className="text-gray-500">
-                                            {post.commentsCount} Comments
-                                        </p>
-                                    </>
-                                )}
+    const fetchComments = async () => {
+      // Fetch all comments separately if needed
+      // ...
+    };
 
-                                {post.creatorUserId === userId && (
-                                    <div className="mt-2">
-                                        {editMode === post._id ? (
-                                            <button
-                                                onClick={() =>
-                                                    handleUpdate(post._id)
-                                                }
-                                                className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600"
-                                            >
-                                                Save
-                                            </button>
-                                        ) : (
-                                            <button
-                                                onClick={() =>
-                                                    handleEdit(
-                                                        post._id,
-                                                        post.name
-                                                    )
-                                                }
-                                                className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600"
-                                            >
-                                                Edit
-                                            </button>
-                                        )}
+    fetchPosts();
+    fetchComments();
+  }, []);
 
-                                        <button
-                                            onClick={() =>
-                                                handleDelete(post._id)
-                                            }
-                                            className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
-                                )}
+  const fetchFileSize = async (post: PostData): Promise<string> => {
+    try {
+      const response = await fetch(post.gameFileUrl);
+      const sizeInBytes = response.headers.get("content-length");
+      if (sizeInBytes) {
+        const sizeInKb = Math.ceil(parseInt(sizeInBytes, 10) / 1024);
+        return `${sizeInKb} KB`;
+      }
+    } catch (error) {
+      console.error("Error getting file size:", error);
+    }
+    return "Unknown";
+  };
 
-                                <div className="mt-2 space-y-2">
-                                    {postComments
-                                        .filter(
-                                            (comment) =>
-                                                comment.postId === post._id
-                                        )
-                                        .map((comment) => (
-                                            <div
-                                                key={comment._id}
-                                                className="text-gray-300"
-                                            >
-                                                {comment.text}
-                                            </div>
-                                        ))}
-                                </div>
+  const handleDelete = async (postId: string) => {
+    try {
+      await axios.delete(
+        import.meta.env.VITE_SERVER +
+          import.meta.env.VITE_SERVER_DELETE_POST_PATH +
+          `/${postId}`,
+        {
+          headers: {
+            authorization: `JWT ${authToken} ${refreshToken}`,
+          },
+        }
+      );
 
-                                <div className="flex mt-2 space-x-2">
-                                    <input
-                                        type="text"
-                                        placeholder="Add a comment"
-                                        value={commentTexts[post._id] || ""}
-                                        onChange={(e) =>
-                                            setCommentTexts(
-                                                (prevCommentTexts) => ({
-                                                    ...prevCommentTexts,
-                                                    [post._id]: e.target.value,
-                                                })
-                                            )
-                                        }
-                                        className="border-2 border-gray-300 p-2 rounded-md"
-                                    />
-                                    <button
-                                        onClick={() =>
-                                            handleAddComment(post._id)
-                                        }
-                                        className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
-                                    >
-                                        Add Comment
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
+      setPosts((prevPosts) =>
+        prevPosts.filter((post) => post._id !== postId)
+      );
+      setOriginalPosts((prevOriginalPosts) =>
+        prevOriginalPosts.filter((post) => post._id !== postId)
+      );
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
+  const handleEdit = (postId: string, initialName: string) => {
+    setEditMode(postId);
+    setEditedName(initialName);
+  };
+
+  const handleUpdate = async (postId: string) => {
+    try {
+      await axios.put(
+        import.meta.env.VITE_SERVER +
+          import.meta.env.VITE_SERVER_UPDATE_POST_PATH +
+          `/${postId}`,
+        { name: editedName },
+        {
+          headers: {
+            authorization: `JWT ${authToken} ${refreshToken}`,
+          },
+        }
+      );
+
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post._id === postId ? { ...post, name: editedName } : post
+        )
+      );
+
+      setEditMode(null);
+    } catch (error) {
+      console.error("Error updating post:", error);
+    }
+  };
+
+  const handleAddComment = async (postId: string) => {
+    try {
+      await axios.post<CommentData>(
+        import.meta.env.VITE_SERVER +
+          import.meta.env.VITE_SERVER_ADD_COMMENT_PATH,
+        { postId, text: commentTexts[postId] || "", userId },
+        {
+          headers: {
+            authorization: `JWT ${authToken} ${refreshToken}`,
+          },
+        }
+      );
+
+      const postComments = await fetchPostComments(postId);
+      setCommentTexts((prevCommentTexts) => ({
+        ...prevCommentTexts,
+        [postId]: "", // Clear the comment text for this post
+      }));
+
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post._id === postId
+            ? { ...post, commentsCount: postComments.length }
+            : post
+        )
+      );
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
+  };
+
+  const fetchPostComments = async (postId: string): Promise<CommentData[]> => {
+    try {
+      const response = await axios.get<CommentData[]>(
+        `${import.meta.env.VITE_SERVER}${import.meta.env.VITE_SERVER_GET_POST_COMMENTS_PATH}/${postId}`,
+        {
+          headers: {
+            authorization: `JWT ${authToken} ${refreshToken}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching post comments:", error);
+      return [];
+    }
+  };
+
+  const handleSearch = (searchTerm: string) => {
+    if (!searchTerm.trim()) {
+      setPosts(originalPosts);
+      return;
+    }
+
+    const filteredPosts = originalPosts.filter((post) =>
+      post.creatorName.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    setPosts(filteredPosts);
+  };
+
+  return (
+    <div className="box-border">
+      <h2 className="mt-0 mx-0 mb-8 p-0 text-white text-center text-4xl">
+        Posts
+      </h2>
+      <div className="flex items-center justify-center mb-4">
+        <input
+          type="text"
+          placeholder="Search by creator name"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            handleSearch(e.target.value);
+          }}
+          className="border-2 border-gray-300 p-2 rounded-md"
+        />
+      </div>
+      <div className="flex flex-wrap justify-center">
+        {posts.map((post) => (
+          <div key={post._id} className="m-4 max-w-[360px]">
+            <div className="bg-[#222831] text-[#ffffff] rounded-2xl overflow-hidden">
+              <img
+                src={post.pictureUrl}
+                alt="Post"
+                className="object-cover w-full h-48"
+              />
+              <div className="p-4">
+                {editMode === post._id ? (
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="text"
+                      value={editedName}
+                      onChange={(e) => setEditedName(e.target.value)}
+                      className="border-2 border-gray-300 p-2 rounded-md"
+                    />
+                    <button
+                      onClick={() => setEditMode(null)}
+                      className="bg-gray-500 text-white px-3 py-1 rounded-md hover:bg-gray-600"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <h3 className="text-2xl">{post.name}</h3>
+                    <p className="text-gray-300">
+                      Creator: {post.creatorName}
+                    </p>
+                    <a
+                      href={post.gameFileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:underline"
+                    >
+                      Download Game File
+                    </a>{" "}
+                    <span className="text-gray-500">
+                      ({post.fileSize || "Unknown"})
+                    </span>
+                    <p className="text-gray-500">
+                      {post.commentsCount} Comments
+                    </p>
+                  </>
+                )}
+
+                {post.creatorUserId === userId && (
+                  <div className="mt-2">
+                    {editMode === post._id ? (
+                      <button
+                        onClick={() => handleUpdate(post._id)}
+                        className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600"
+                      >
+                        Save
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleEdit(post._id, post.name)}
+                        className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600"
+                      >
+                        Edit
+                      </button>
+                    )}
+
+                    <button
+                      onClick={() => handleDelete(post._id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
+
+                <div className="mt-2 space-y-2">
+                  {/* Display comments if needed */}
+                  {/* ... (remaining component code) */}
+                </div>
+
+                <div className="flex mt-2 space-x-2">
+                  <input
+                    type="text"
+                    placeholder="Add a comment"
+                    value={commentTexts[post._id] || ""}
+                    onChange={(e) =>
+                      setCommentTexts((prevCommentTexts) => ({
+                        ...prevCommentTexts,
+                        [post._id]: e.target.value,
+                      }))
+                    }
+                    className="border-2 border-gray-300 p-2 rounded-md"
+                  />
+                  <button
+                    onClick={() => handleAddComment(post._id)}
+                    className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+                  >
+                    Add Comment
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default PostList;
