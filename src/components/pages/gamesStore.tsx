@@ -1,8 +1,12 @@
-// Assuming you have other necessary imports
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useUserData } from "../../store/hook/useUserData.ts";
+
+interface CommentData {
+    _id: string;
+    postId: string;
+    text: string;
+}
 
 interface PostData {
     _id: string;
@@ -12,23 +16,25 @@ interface PostData {
     creatorUserId: string;
     creatorName: string;
     fileSize: string;
-    // other fields...
+    commentsCount: number;
 }
 
 const PostList: React.FC = () => {
     const { userId } = useUserData();
     const [posts, setPosts] = useState<PostData[]>([]);
-    const [originalPosts, setOriginalPosts] = useState<PostData[]>([]); // Added state for original posts
+    const [originalPosts, setOriginalPosts] = useState<PostData[]>([]);
     const [editMode, setEditMode] = useState<string | null>(null);
     const [editedName, setEditedName] = useState<string>("");
+    const [commentTexts, setCommentTexts] = useState<{ [postId: string]: string }>({});
     const [searchTerm, setSearchTerm] = useState<string>("");
     const authToken = localStorage.getItem("authToken");
     const refreshToken = localStorage.getItem("refreshToken");
+    const [postComments, setPostComments] = useState<CommentData[]>([]);
 
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const response = await axios.get<PostData[]>(
+                const postsResponse = await axios.get<PostData[]>(
                     import.meta.env.VITE_SERVER +
                         import.meta.env.VITE_SERVER_GET_ALL_POSTS_PATH,
                     {
@@ -38,7 +44,7 @@ const PostList: React.FC = () => {
                     }
                 );
 
-                const postsWithFullPath = response.data.map((post) => ({
+                const postsWithFullPath = postsResponse.data.map((post) => ({
                     ...post,
                     pictureUrl:
                         import.meta.env.VITE_SERVER + "/" + post.pictureUrl,
@@ -55,15 +61,55 @@ const PostList: React.FC = () => {
                     fileSize: postsWithFileSizes[index],
                 }));
 
-                setPosts(postsWithSizes);
-                setOriginalPosts(postsWithSizes); // Save the original posts
+                const postsWithComments = await Promise.all(
+                    postsWithSizes.map(async (post) => {
+                        const commentsResponse = await axios.get<CommentData[]>(
+                            `${import.meta.env.VITE_SERVER}${
+                                import.meta.env
+                                    .VITE_SERVER_GET_POST_COMMENTS_PATH
+                            }/${post._id}`,
+                            {
+                                headers: {
+                                    authorization: `JWT ${authToken} ${refreshToken}`,
+                                },
+                            }
+                        );
+                        return {
+                            ...post,
+                            commentsCount: commentsResponse.data.length,
+                        };
+                    })
+                );
+
+                setPosts(postsWithComments);
+                setOriginalPosts(postsWithComments);
             } catch (error) {
                 console.error("Error fetching posts:", error);
             }
         };
 
+        const fetchComments = async () => {
+            try {
+                // Fetch all comments for all posts
+                const commentsResponse = await axios.get<CommentData[]>(
+                    `${import.meta.env.VITE_SERVER}${
+                        import.meta.env.VITE_SERVER_GET_ALL_COMMENTS_PATH
+                    }`,
+                    {
+                        headers: {
+                            authorization: `JWT ${authToken} ${refreshToken}`,
+                        },
+                    }
+                );
+                setPostComments(commentsResponse.data);
+            } catch (error) {
+                console.error("Error fetching comments:", error);
+            }
+        };
+
         fetchPosts();
-    }, []);
+        fetchComments();
+    }, [authToken, refreshToken]);
 
     const fetchFileSize = async (post: PostData): Promise<string> => {
         try {
@@ -95,6 +141,9 @@ const PostList: React.FC = () => {
             setPosts((prevPosts) =>
                 prevPosts.filter((post) => post._id !== postId)
             );
+            setOriginalPosts((prevOriginalPosts) =>
+                prevOriginalPosts.filter((post) => post._id !== postId)
+            );
         } catch (error) {
             console.error("Error deleting post:", error);
         }
@@ -107,7 +156,6 @@ const PostList: React.FC = () => {
 
     const handleUpdate = async (postId: string) => {
         try {
-
             await axios.put(
                 import.meta.env.VITE_SERVER +
                     import.meta.env.VITE_SERVER_UPDATE_POST_PATH +
@@ -132,14 +180,61 @@ const PostList: React.FC = () => {
         }
     };
 
+    const handleAddComment = async (postId: string) => {
+        try {
+            await axios.post<CommentData>(
+                import.meta.env.VITE_SERVER +
+                    import.meta.env.VITE_SERVER_ADD_COMMENT_PATH,
+                { postId, text: commentTexts[postId], userId },
+                {
+                    headers: {
+                        authorization: `JWT ${authToken} ${refreshToken}`,
+                    },
+                }
+            );
+
+            // Update comments for the specific post
+            const updatedComments = await fetchPostComments(postId);
+            setPostComments((prevComments) => [...prevComments, ...updatedComments]);
+
+            // Clear the comment text for this post
+            setCommentTexts((prevCommentTexts) => {
+                const newCommentTexts = { ...prevCommentTexts };
+                newCommentTexts[postId] = "";
+                return newCommentTexts;
+            });
+        } catch (error) {
+            console.error("Error adding comment:", error);
+        }
+    };
+
+    const fetchPostComments = async (
+        postId: string
+    ): Promise<CommentData[]> => {
+        try {
+            const response = await axios.get<CommentData[]>(
+                `${import.meta.env.VITE_SERVER}${
+                    import.meta.env.VITE_SERVER_GET_POST_COMMENTS_PATH
+                }/${postId}`,
+                {
+                    headers: {
+                        authorization: `JWT ${authToken} ${refreshToken}`,
+                    },
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching post comments:", error);
+            return [];
+        }
+    };
+
     const handleSearch = (searchTerm: string) => {
-        // If search term is empty, show all posts
         if (!searchTerm.trim()) {
             setPosts(originalPosts);
             return;
         }
 
-        // Perform filtering based on the entered search term
         const filteredPosts = originalPosts.filter((post) =>
             post.creatorName.toLowerCase().includes(searchTerm.toLowerCase())
         );
@@ -210,6 +305,9 @@ const PostList: React.FC = () => {
                                         <span className="text-gray-500">
                                             ({post.fileSize || "Unknown"})
                                         </span>
+                                        <p className="text-gray-500">
+                                            {post.commentsCount} Comments
+                                        </p>
                                     </>
                                 )}
 
@@ -248,6 +346,45 @@ const PostList: React.FC = () => {
                                         </button>
                                     </div>
                                 )}
+
+                                <div className="mt-2 space-y-2">
+                                    {postComments
+                                        .filter(
+                                            (comment) =>
+                                                comment.postId === post._id
+                                        )
+                                        .map((comment) => (
+                                            <div
+                                                key={comment._id}
+                                                className="text-gray-300"
+                                            >
+                                                {comment.text}
+                                            </div>
+                                        ))}
+                                </div>
+
+                                <div className="flex mt-2 space-x-2">
+                                    <input
+                                        type="text"
+                                        placeholder="Add a comment"
+                                        value={commentTexts[post._id] || ""}
+                                        onChange={(e) =>
+                                            setCommentTexts((prevCommentTexts) => ({
+                                                ...prevCommentTexts,
+                                                [post._id]: e.target.value,
+                                            }))
+                                        }
+                                        className="border-2 border-gray-300 p-2 rounded-md"
+                                    />
+                                    <button
+                                        onClick={() =>
+                                            handleAddComment(post._id)
+                                        }
+                                        className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+                                    >
+                                        Add Comment
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
