@@ -55,7 +55,6 @@ const LoginPage = () => {
         const userData = response.data.userData;
         const accessToken = response.data.accessToken;
         const refreashToken = response.data.refreashToken;
-        console.log(userData);
         
 
         userDataDispatch({
@@ -63,20 +62,22 @@ const LoginPage = () => {
             payload: {
                 userId:userData._id,
                 fullName: userData.fullName,
-                imagePath: userData.picture,
+                imagePath: import.meta.env.VITE_SERVER + "/"+userData.picture,
             },
         });
 
         // Store the token in localStorage
         localStorage.setItem("authToken", accessToken);
         localStorage.setItem("refreashToken", refreashToken);
+        localStorage.setItem("userId", userData._id);
+
 
         // Update the authentication status
         authenticationDispatch({type: "set-isAuthenticated", payload: true});
 
         navigate("/dashboard");
     };
-
+    
     return (
         <div
             className="mt-[25vh] p-[40px] translate-x--1/2 translate-y--1/2 bg-[rgba(0,0,0,.6)] box-border rounded-[10px]">

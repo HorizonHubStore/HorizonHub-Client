@@ -317,10 +317,6 @@ const PostList: React.FC = () => {
                   </div>
                 )}
 
-                <div className="mt-2 space-y-2">
-                  {/* Display comments if needed */}
-                  {/* ... (remaining component code) */}
-                </div>
 
                 <div className="flex mt-2 space-x-2">
                   <input
