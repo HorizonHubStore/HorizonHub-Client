@@ -25,7 +25,9 @@ const PostList: React.FC = () => {
     const [originalPosts, setOriginalPosts] = useState<PostData[]>([]);
     const [editMode, setEditMode] = useState<string | null>(null);
     const [editedName, setEditedName] = useState<string>("");
-    const [commentTexts, setCommentTexts] = useState<{ [postId: string]: string }>({});
+    const [commentTexts, setCommentTexts] = useState<{
+        [postId: string]: string;
+    }>({});
     const [searchTerm, setSearchTerm] = useState<string>("");
     const authToken = localStorage.getItem("authToken");
     const refreshToken = localStorage.getItem("refreshToken");
@@ -195,7 +197,12 @@ const PostList: React.FC = () => {
 
             // Update comments for the specific post
             const updatedComments = await fetchPostComments(postId);
-            setPostComments((prevComments) => [...prevComments, ...updatedComments]);
+            console.log(updatedComments);
+            
+            setPostComments((prevComments) => [
+                ...prevComments,
+                ...updatedComments,
+            ]);
 
             // Clear the comment text for this post
             setCommentTexts((prevCommentTexts) => {
@@ -369,10 +376,12 @@ const PostList: React.FC = () => {
                                         placeholder="Add a comment"
                                         value={commentTexts[post._id] || ""}
                                         onChange={(e) =>
-                                            setCommentTexts((prevCommentTexts) => ({
-                                                ...prevCommentTexts,
-                                                [post._id]: e.target.value,
-                                            }))
+                                            setCommentTexts(
+                                                (prevCommentTexts) => ({
+                                                    ...prevCommentTexts,
+                                                    [post._id]: e.target.value,
+                                                })
+                                            )
                                         }
                                         className="border-2 border-gray-300 p-2 rounded-md"
                                     />
