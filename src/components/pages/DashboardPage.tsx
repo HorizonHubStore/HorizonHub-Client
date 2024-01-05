@@ -10,13 +10,13 @@ const DashboardPage = () => {
 
     const handleLogout = async () => {
         const authToken = localStorage.getItem('authToken');
-        const refreashToken = localStorage.getItem("refreashToken")
+        const refreshToken = localStorage.getItem("refreshToken")
         try {
             // Send a POST request to your backend logout endpoint
             const response = await axios.post(
                 (import.meta.env.VITE_SERVER + import.meta.env.VITE_SERVER_LOGOUT_PATH), null, {
                     headers: {
-                        authorization: `JWT ${authToken} ${refreashToken}`,
+                        authorization: `JWT ${authToken} ${refreshToken}`,
                         // Add other headers as needed
                     },
                 });
@@ -26,7 +26,7 @@ const DashboardPage = () => {
 
             // Remove the token from localStorage on logout
             localStorage.removeItem('authToken');
-            localStorage.removeItem('refreashToken');
+            localStorage.removeItem('refreshToken');
 
             // Update the authentication status
             authenticationDispatch({type: 'set-isAuthenticated', payload: false});

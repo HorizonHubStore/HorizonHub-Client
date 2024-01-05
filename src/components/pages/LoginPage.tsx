@@ -54,14 +54,14 @@ const LoginPage = () => {
     const handelLoginResponse = (response: AxiosResponse) => {
         const userData = response.data.userData;
         const accessToken = response.data.accessToken;
-        const refreashToken = response.data.refreashToken;
+        const refreshToken = response.data.refreshToken;
         console.log(userData);
         
 
         userDataDispatch({
             type: "set-userData",
             payload: {
-                userId:userData._id,
+                userId: userData._id,
                 fullName: userData.fullName,
                 imagePath: userData.picture,
             },
@@ -69,7 +69,7 @@ const LoginPage = () => {
 
         // Store the token in localStorage
         localStorage.setItem("authToken", accessToken);
-        localStorage.setItem("refreashToken", refreashToken);
+        localStorage.setItem("refreshToken", refreshToken);
 
         // Update the authentication status
         authenticationDispatch({type: "set-isAuthenticated", payload: true});
