@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useUserData } from "../../store/hook/useUserData.ts";
+import { Link } from "react-router-dom";
 
 interface CommentData {
   _id: string;
@@ -243,105 +244,105 @@ const PostList: React.FC = () => {
         />
       </div>
       <div className="flex flex-wrap justify-center">
-        {posts.map((post) => (
-          <div key={post._id} className="m-4 max-w-[360px]">
-            <div className="bg-[#222831] text-[#ffffff] rounded-2xl overflow-hidden">
-              <img
-                src={post.pictureUrl}
-                alt="Post"
-                className="object-cover w-full h-48"
-              />
-              <div className="p-4">
-                {editMode === post._id ? (
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="text"
-                      value={editedName}
-                      onChange={(e) => setEditedName(e.target.value)}
-                      className="border-2 border-gray-300 p-2 rounded-md"
-                    />
-                    <button
-                      onClick={() => setEditMode(null)}
-                      className="bg-gray-500 text-white px-3 py-1 rounded-md hover:bg-gray-600"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <h3 className="text-2xl">{post.name}</h3>
-                    <p className="text-gray-300">
-                      Creator: {post.creatorName}
-                    </p>
-                    <a
-                      href={post.gameFileUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 hover:underline"
-                    >
-                      Download Game File
-                    </a>{" "}
-                    <span className="text-gray-500">
-                      ({post.fileSize || "Unknown"})
-                    </span>
-                    <p className="text-gray-500">
-                      {post.commentsCount} Comments
-                    </p>
-                  </>
-                )}
-
-                {post.creatorUserId === userId && (
-                  <div className="mt-2">
+        {posts.map((post) => {
+          return (
+            <div key={post._id} className="m-4 max-w-[360px]">
+              <Link to={`/gamesStore/${post._id}`}>
+                <div className="bg-[#222831] text-[#ffffff] rounded-2xl overflow-hidden">
+                  <img
+                    src={post.pictureUrl}
+                    alt="Post"
+                    className="object-cover w-full h-48" />
+                  <div className="p-4">
                     {editMode === post._id ? (
-                      <button
-                        onClick={() => handleUpdate(post._id)}
-                        className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600"
-                      >
-                        Save
-                      </button>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="text"
+                          value={editedName}
+                          onChange={(e) => setEditedName(e.target.value)}
+                          className="border-2 border-gray-300 p-2 rounded-md" />
+                        <button
+                          onClick={() => setEditMode(null)}
+                          className="bg-gray-500 text-white px-3 py-1 rounded-md hover:bg-gray-600"
+                        >
+                          Cancel
+                        </button>
+                      </div>
                     ) : (
-                      <button
-                        onClick={() => handleEdit(post._id, post.name)}
-                        className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600"
-                      >
-                        Edit
-                      </button>
+                      <>
+                        <h3 className="text-2xl">{post.name}</h3>
+                        <p className="text-gray-300">
+                          Creator: {post.creatorName}
+                        </p>
+                        <a
+                          href={post.gameFileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 hover:underline"
+                        >
+                          Download Game File
+                        </a>{" "}
+                        <span className="text-gray-500">
+                          ({post.fileSize || "Unknown"})
+                        </span>
+                        <p className="text-gray-500">
+                          {post.commentsCount} Comments
+                        </p>
+                      </>
                     )}
 
-                    <button
-                      onClick={() => handleDelete(post._id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
-                    >
-                      Delete
-                    </button>
+                    {post.creatorUserId === userId && (
+                      <div className="mt-2">
+                        {editMode === post._id ? (
+                          <button
+                            onClick={() => handleUpdate(post._id)}
+                            className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600"
+                          >
+                            Save
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleEdit(post._id, post.name)}
+                            className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600"
+                          >
+                            Edit
+                          </button>
+                        )}
+
+                        <button
+                          onClick={() => handleDelete(post._id)}
+                          className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
+
+
+                    <div className="flex mt-2 space-x-2">
+                      <input
+                        type="text"
+                        placeholder="Add a comment"
+                        value={commentTexts[post._id] || ""}
+                        onChange={(e) => setCommentTexts((prevCommentTexts) => ({
+                          ...prevCommentTexts,
+                          [post._id]: e.target.value,
+                        }))}
+                        className="border-2 border-gray-300 p-2 rounded-md" />
+                      <button
+                        onClick={() => handleAddComment(post._id)}
+                        className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+                      >
+                        Add Comment
+                      </button>
+                    </div>
                   </div>
-                )}
-
-
-                <div className="flex mt-2 space-x-2">
-                  <input
-                    type="text"
-                    placeholder="Add a comment"
-                    value={commentTexts[post._id] || ""}
-                    onChange={(e) =>
-                      setCommentTexts((prevCommentTexts) => ({
-                        ...prevCommentTexts,
-                        [post._id]: e.target.value,
-                      }))
-                    }
-                    className="border-2 border-gray-300 p-2 rounded-md"
-                  />
-                  <button
-                    onClick={() => handleAddComment(post._id)}
-                    className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
-                  >
-                    Add Comment
-                  </button>
                 </div>
+                </Link>
               </div>
-            </div>
-          </div>
-        ))}
+          );
+        }
+        )}
       </div>
     </div>
   );

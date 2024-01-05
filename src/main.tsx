@@ -9,6 +9,7 @@ import {LoginRoute} from "./routes/LoginRoute.tsx";
 import {DashboardRoute} from "./routes/DashboardRoute.tsx";
 import {NewsRoute} from "./routes/NewsRoute.tsx";
 import { GamesStoreRoute } from './routes/GamesStoreRoute.tsx';
+import PostDetails from './components/detailedPost/detailedPost.tsx';
 
 const router = createBrowserRouter([
     {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
             {
                 path: 'gamesStore',
                 element: <GamesStoreRoute/>,
+            },
+            {
+                path:'gamesStore/:postId',
+                element : <PostDetails/>,
             },
             {
                 path: 'error',
