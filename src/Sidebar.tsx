@@ -58,13 +58,16 @@ const Sidebar = () => {
                 );
                 const userData = response.data.userData;
                 console.log(userData.picture);
-                
+
                 userDataDispatch({
                     type: "set-userData",
                     payload: {
                         userId: userData._id,
                         fullName: userData.fullName,
-                        imagePath: import.meta.env.VITE_SERVER + "/" + userData.picture,
+                        imagePath:
+                            import.meta.env.VITE_SERVER +
+                            "/" +
+                            userData.picture,
                     },
                 });
             } catch (error) {
