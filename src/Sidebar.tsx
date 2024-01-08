@@ -5,8 +5,9 @@ import {
     useAuthenticationDispatch,
 } from "./store/hook/useAuthentication";
 import { useEffect } from "react";
-import axios from "axios";
 import { useUserDataDispatch } from "./store/hook/useUserData";
+import { extractUserIdFromToken } from "./utillity/jwt";
+import api from "./api/api";
 
 interface INavLinkOption {
     name: string;
@@ -33,21 +34,9 @@ const Sidebar = () => {
     const userDataDispatch = useUserDataDispatch();
 
     useEffect(() => {
-        // Check if authentication token exists in local storage
-        const authToken = localStorage.getItem("authToken");
-        const refreshToken = localStorage.getItem("refreashToken");
-
-        const userId = localStorage.getItem("userId");
-        if (authToken) {
-            authenticationDispatch({
-                type: "set-isAuthenticated",
-                payload: true,
-            });
-        }
-        const fetchUserData = async () => {
+        const fetchUserData = async (userId: string | null) => {
             try {
-                const response = await axios.get(
-                    import.meta.env.VITE_SERVER +
+                const response = await api.get(
                         import.meta.env.VITE_SERVER_USER_GET_DATA +
                         `/${userId}`,
                     {
@@ -57,7 +46,6 @@ const Sidebar = () => {
                     }
                 );
                 const userData = response.data.userData;
-                console.log(userData.picture);
 
                 userDataDispatch({
                     type: "set-userData",
@@ -74,7 +62,19 @@ const Sidebar = () => {
                 console.error("Error fetching user data:", error);
             }
         };
-        fetchUserData();
+        // Check if authentication token exists in local storage
+        const authToken = localStorage.getItem("authToken");
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (authToken) {
+            fetchUserData(extractUserIdFromToken(authToken));
+            authenticationDispatch({
+                type: "set-isAuthenticated",
+                payload: true,
+            });
+        } else {
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("refreshToken");
+        }
     }, []); // Run this effect only once during component mount
 
     const { isAuthenticated } = useAuthentication();

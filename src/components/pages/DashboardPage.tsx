@@ -1,9 +1,9 @@
 import {Button} from "@mui/material";
 import {useNavigate} from "react-router-dom";
-import axios from "axios";
 import {useAuthenticationDispatch} from "../../store/hook/useAuthentication.ts";
 import UserProfile from "../dashboard/UserProfile.tsx";
 import PostForm from "../forms/PostForm.tsx";
+import api from "../../api/api.tsx";
 
 const DashboardPage = () => {
     const authenticationDispatch = useAuthenticationDispatch();
@@ -11,13 +11,13 @@ const DashboardPage = () => {
 
     const handleLogout = async () => {
         const authToken = localStorage.getItem('authToken');
-        const refreashToken = localStorage.getItem("refreashToken")
+        const refreshToken = localStorage.getItem("refreshToken")
         try {
             // Send a POST request to your backend logout endpoint
-            const response = await axios.post(
-                (import.meta.env.VITE_SERVER + import.meta.env.VITE_SERVER_LOGOUT_PATH), null, {
+            const response = await api.post(
+                (import.meta.env.VITE_SERVER_LOGOUT_PATH), null, {
                     headers: {
-                        authorization: `JWT ${authToken} ${refreashToken}`,
+                        authorization: `JWT ${authToken} ${refreshToken}`,
                     },
                 });
 
@@ -26,7 +26,7 @@ const DashboardPage = () => {
 
             // Remove the token from localStorage on logout
             localStorage.removeItem('authToken');
-            localStorage.removeItem('refreashToken');
+            localStorage.removeItem('refreshToken');
 
             // Update the authentication status
             authenticationDispatch({type: 'set-isAuthenticated', payload: false});

@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import axios from "axios";
 import { useUserData } from "../../store/hook/useUserData.ts";
+import api from "../../api/api.tsx";
 
 interface PostData {
   game: {
@@ -71,8 +71,7 @@ const PostForm: React.FC = () => {
         formData.append("gameFile", selectedGameFile);
       }
 
-      const response = await axios.post(
-        import.meta.env.VITE_SERVER +
+      const response = await api.post(
           import.meta.env.VITE_SERVER_CREATE_POST_PATH,
         formData,
         {

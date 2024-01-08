@@ -1,6 +1,6 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import api from "../../api/api";
 
 export interface IComment {
     text: string;
@@ -32,8 +32,7 @@ const PostDetails: React.FC = () => {
     useEffect(() => {
         const fetchPost = async () => {
             try {
-                const postResponse = await axios.get<IPost>(
-                    import.meta.env.VITE_SERVER +
+                const postResponse = await api.get<IPost>(
                         import.meta.env.VITE_SERVER_GET_POST_PATH +
                         `/${postId}`,
                     {

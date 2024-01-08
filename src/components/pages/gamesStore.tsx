@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useUserData } from "../../store/hook/useUserData.ts";
 import { Link } from "react-router-dom";
+import api from "../../api/api.tsx";
 
 interface CommentData {
     _id: string;
@@ -17,6 +17,7 @@ interface PostData {
     creatorUserId: string;
     creatorName: string;
     fileSize: string;
+    comments: [];
     commentsCount: number;
 }
 
@@ -36,8 +37,7 @@ const PostList: React.FC = () => {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const postsResponse = await axios.get<PostData[]>(
-                    import.meta.env.VITE_SERVER +
+                const postsResponse = await api.get<PostData[]>(
                         import.meta.env.VITE_SERVER_GET_ALL_POSTS_PATH,
                     {
                         headers: {
@@ -46,45 +46,28 @@ const PostList: React.FC = () => {
                     }
                 );
 
-                const postsWithFullPath = postsResponse.data.map((post) => ({
-                    ...post,
-                    pictureUrl:
-                        import.meta.env.VITE_SERVER + "/" + post.pictureUrl,
-                    gameFileUrl:
-                        import.meta.env.VITE_SERVER + "/" + post.gameFileUrl,
-                }));
+                const postsWithFullPath: PostData[] = await Promise.all(
+                    postsResponse.data.map(async (post) => {
+                        const pictureUrl =
+                            import.meta.env.VITE_SERVER + "/" + post.pictureUrl;
+                        const gameFileUrl =
+                            import.meta.env.VITE_SERVER +
+                            "/" +
+                            post.gameFileUrl;
+                        const commentsCount = post.comments.length;
+                        const fileSize = await fetchFileSize(gameFileUrl);
 
-                const postsWithFileSizes = await Promise.all(
-                    postsWithFullPath.map(fetchFileSize)
-                );
-
-                const postsWithSizes = postsWithFullPath.map((post, index) => ({
-                    ...post,
-                    fileSize: postsWithFileSizes[index],
-                }));
-
-                const postsWithComments = await Promise.all(
-                    postsWithSizes.map(async (post) => {
-                        const commentsResponse = await axios.get<CommentData[]>(
-                            `${import.meta.env.VITE_SERVER}${
-                                import.meta.env
-                                    .VITE_SERVER_GET_POST_COMMENTS_PATH
-                            }/${post._id}`,
-                            {
-                                headers: {
-                                    authorization: `JWT ${authToken} ${refreshToken}`,
-                                },
-                            }
-                        );
                         return {
                             ...post,
-                            commentsCount: commentsResponse.data.length,
+                            pictureUrl,
+                            gameFileUrl,
+                            commentsCount,
+                            fileSize,
                         };
                     })
                 );
-
-                setPosts(postsWithComments);
-                setOriginalPosts(postsWithComments);
+                setPosts(postsWithFullPath);
+                setOriginalPosts(postsWithFullPath);
             } catch (error) {
                 console.error("Error fetching posts:", error);
             }
@@ -99,9 +82,9 @@ const PostList: React.FC = () => {
         fetchComments();
     }, []);
 
-    const fetchFileSize = async (post: PostData): Promise<string> => {
+    const fetchFileSize = async (gameFileUrl: string): Promise<string> => {
         try {
-            const response = await fetch(post.gameFileUrl);
+            const response = await fetch(gameFileUrl);
             const sizeInBytes = response.headers.get("content-length");
             if (sizeInBytes) {
                 const sizeInKb = parseInt(sizeInBytes, 10) / 1024;
@@ -113,14 +96,10 @@ const PostList: React.FC = () => {
         }
         return "Unknown";
     };
-    
 
     const handleDelete = async (postId: string) => {
         try {
-            console.log("delete action");
-
-            await axios.delete(
-                import.meta.env.VITE_SERVER +
+            await api.delete(
                     import.meta.env.VITE_SERVER_DELETE_POST_PATH +
                     `/${postId}`,
                 {
@@ -148,8 +127,7 @@ const PostList: React.FC = () => {
 
     const handleUpdate = async (postId: string) => {
         try {
-            await axios.put(
-                import.meta.env.VITE_SERVER +
+            await api.put(
                     import.meta.env.VITE_SERVER_UPDATE_POST_PATH +
                     `/${postId}`,
                 { name: editedName },
@@ -174,8 +152,7 @@ const PostList: React.FC = () => {
 
     const handleAddComment = async (postId: string) => {
         try {
-            await axios.post<CommentData>(
-                import.meta.env.VITE_SERVER +
+            await api.post<CommentData>(
                     import.meta.env.VITE_SERVER_ADD_COMMENT_PATH,
                 { postId, text: commentTexts[postId] || "", userId },
                 {
@@ -185,7 +162,6 @@ const PostList: React.FC = () => {
                 }
             );
 
-            const postComments = await fetchPostComments(postId);
             setCommentTexts((prevCommentTexts) => ({
                 ...prevCommentTexts,
                 [postId]: "", // Clear the comment text for this post
@@ -194,33 +170,12 @@ const PostList: React.FC = () => {
             setPosts((prevPosts) =>
                 prevPosts.map((post) =>
                     post._id === postId
-                        ? { ...post, commentsCount: postComments.length }
+                        ? { ...post, commentsCount: post.commentsCount + 1 }
                         : post
                 )
             );
         } catch (error) {
             console.error("Error adding comment:", error);
-        }
-    };
-
-    const fetchPostComments = async (
-        postId: string
-    ): Promise<CommentData[]> => {
-        try {
-            const response = await axios.get<CommentData[]>(
-                `${import.meta.env.VITE_SERVER}${
-                    import.meta.env.VITE_SERVER_GET_POST_COMMENTS_PATH
-                }/${postId}`,
-                {
-                    headers: {
-                        authorization: `JWT ${authToken} ${refreshToken}`,
-                    },
-                }
-            );
-            return response.data;
-        } catch (error) {
-            console.error("Error fetching post comments:", error);
-            return [];
         }
     };
 

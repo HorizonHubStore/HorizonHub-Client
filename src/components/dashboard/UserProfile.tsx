@@ -3,7 +3,7 @@ import {
     useUserData,
     useUserDataDispatch,
 } from "../../store/hook/useUserData.ts";
-import axios from "axios";
+import api from "../../api/api.tsx";
 
 const UserProfile: React.FC = () => {
     const authToken = localStorage.getItem("authToken");
@@ -33,8 +33,7 @@ const UserProfile: React.FC = () => {
             formData.append("userId", userId);
 
             // Send a request to update the user's image
-            const response = await axios.put(
-                import.meta.env.VITE_SERVER +
+            const response = await api.put(
                     import.meta.env.VITE_SERVER_USER_UPDATE_PIC_PATH,
                 formData,
                 {

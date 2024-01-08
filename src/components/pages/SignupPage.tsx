@@ -1,7 +1,8 @@
 import {ChangeEvent, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import axios from 'axios';
 import {Button, TextField} from "@mui/material";
+import api from "../../api/api";
+import axios from "axios";
 
 const SignupPage = () => {
     const [username, setUsername] = useState('');
@@ -19,8 +20,8 @@ const SignupPage = () => {
             }
 
             // Send a POST request to your backend login endpoint
-            const response = await axios.post(
-                (import.meta.env.VITE_SERVER + import.meta.env.VITE_SERVER_SIGNUP_PATH),
+            const response = await api.post(
+                (import.meta.env.VITE_SERVER_SIGNUP_PATH),
                 {username, password, fullName},
                 {headers: {'Content-Type': 'application/json'}}
             );
