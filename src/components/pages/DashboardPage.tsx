@@ -18,6 +18,7 @@ const DashboardPage = () => {
                 (import.meta.env.VITE_SERVER_LOGOUT_PATH), null, {
                     headers: {
                         authorization: `JWT ${authToken} ${refreshToken}`,
+
                     },
                 });
 

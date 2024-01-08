@@ -59,7 +59,7 @@ const LoginPage = () => {
         userDataDispatch({
             type: "set-userData",
             payload: {
-                userId:userData._id,
+                userId: userData._id,
                 fullName: userData.fullName,
                 imagePath: import.meta.env.VITE_SERVER + "/"+userData.picture,
             },
@@ -68,7 +68,6 @@ const LoginPage = () => {
         // Store the token in localStorage
         localStorage.setItem("authToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
-
 
         // Update the authentication status
         authenticationDispatch({type: "set-isAuthenticated", payload: true});
