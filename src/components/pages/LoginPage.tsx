@@ -1,11 +1,12 @@
 import {ChangeEvent, useState} from "react";
 import {useAuthenticationDispatch} from "../../store/hook/useAuthentication.ts";
 import {Link, redirect, useNavigate} from "react-router-dom";
-import axios, {AxiosResponse} from "axios";
 import {Button, TextField} from "@mui/material";
 import {useUserDataDispatch} from "../../store/hook/useUserData.ts";
 import {GoogleLogin} from "@react-oauth/google";
 import {jwtDecode, JwtPayload} from "jwt-decode";
+import api from "../../api/api.tsx";
+import { AxiosResponse } from "axios";
 
 const LoginPage = () => {
     const [username, setUsername] = useState("");
@@ -17,8 +18,7 @@ const LoginPage = () => {
     const handelGoogleLogin = async (credentials: JwtPayload) => {
         try {
             // Send a POST request to your backend login endpoint
-            const response = await axios.post(
-                import.meta.env.VITE_SERVER +
+            const response = await api.post(
                 import.meta.env.VITE_SERVER_GOOGLE_LOGIN_PATH,
                 {credentials},
                 {headers: {"Content-Type": "application/json"}}
@@ -35,8 +35,7 @@ const LoginPage = () => {
     const handleLogin = async () => {
         try {
             // Send a POST request to your backend login endpoint
-            const response = await axios.post(
-                import.meta.env.VITE_SERVER +
+            const response = await api.post(
                 import.meta.env.VITE_SERVER_LOGIN_PATH,
                 {username, password},
                 {headers: {"Content-Type": "application/json"}}
@@ -55,7 +54,6 @@ const LoginPage = () => {
         const userData = response.data.userData;
         const accessToken = response.data.accessToken;
         const refreshToken = response.data.refreshToken;
-        console.log(userData);
         
 
         userDataDispatch({
@@ -63,7 +61,7 @@ const LoginPage = () => {
             payload: {
                 userId: userData._id,
                 fullName: userData.fullName,
-                imagePath: userData.picture,
+                imagePath: import.meta.env.VITE_SERVER + "/"+userData.picture,
             },
         });
 
@@ -76,7 +74,7 @@ const LoginPage = () => {
 
         navigate("/dashboard");
     };
-
+    
     return (
         <div
             className="mt-[25vh] p-[40px] translate-x--1/2 translate-y--1/2 bg-[rgba(0,0,0,.6)] box-border rounded-[10px]">

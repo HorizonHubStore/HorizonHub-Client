@@ -1,9 +1,9 @@
-import {useEffect, useState} from "react";
 import axios from "axios";
+import {useEffect, useState} from "react";
 
 async function getNewsFromApi() {
     return await axios.get(
-        (import.meta.env.VITE_NEWS_API_URL + import.meta.env.VITE_NEWS_API_KEY),
+        (import.meta.env.VITE_NEWS_API_URL+import.meta.env.VITE_NEWS_API_KEY),
         {
             headers: {
                 'Content-Type': 'application/json'
