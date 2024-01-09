@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
-import {
-    useUserData,
-    useUserDataDispatch,
-} from "../../store/hook/useUserData.ts";
+import React, {useEffect, useState} from "react";
+import {useUserData, useUserDataDispatch,} from "../../store/hook/useUserData.ts";
 import api from "../../api/api.tsx";
 
 const UserProfile: React.FC = () => {
     const authToken = localStorage.getItem("authToken");
     const refreshToken = localStorage.getItem("refreshToken");
-    const { fullName, imagePath, userId } = useUserData();
+    const {fullName, imagePath, userId} = useUserData();
 
     // State for tracking whether the user is in edit mode
     const [editMode, setEditMode] = useState(false);
@@ -34,7 +31,7 @@ const UserProfile: React.FC = () => {
 
             // Send a request to update the user's image
             const response = await api.put(
-                    import.meta.env.VITE_SERVER_USER_UPDATE_PIC_PATH,
+                import.meta.env.VITE_SERVER_USER_UPDATE_PIC_PATH,
                 formData,
                 {
                     headers: {
@@ -53,11 +50,10 @@ const UserProfile: React.FC = () => {
                 payload: {
                     userId: userId,
                     fullName: fullName,
-                    imagePath: import.meta.env.VITE_SERVER + "/"+response.data.filePath,
+                    imagePath: import.meta.env.VITE_SERVER + "/" + response.data.filePath,
                 },
             });
-            
-            
+
 
             // Set the new image URL in the local state
             setEditMode(false);
@@ -67,12 +63,8 @@ const UserProfile: React.FC = () => {
     };
     useEffect(() => {
         setProfileImage(imagePath)
-        
-      }, [imagePath]);
-    
-    
 
-   
+    }, [imagePath]);
 
 
     // Function to handle the selection of an image file
@@ -83,21 +75,21 @@ const UserProfile: React.FC = () => {
             setSelectedImage(file);
         }
     };
-    
+
     return (
         <div className="bg-gray-800 text-white p-6 rounded-lg shadow-md flex flex-col items-center">
-            <h2 className="text-4xl font-semibold mb-4">Dashboard</h2>
+            <h2 className="text-4xl font-semibold mb-4">פרופיל אישי</h2>
             <div className="flex flex-col items-center space-y-4">
-                <h3 className="text-2xl font-semibold">{fullName}</h3>
+                <h3 className="text-2xl font-semibold" dir='rtl'>שם מלא: {fullName}</h3>
                 {editMode ? (
                     <div className="flex flex-col items-center space-y-2">
                         <input
                             type="file"
                             accept="image/*"
                             onChange={handleFileChange}
-                            className="border-2 border-gray-300 p-2 rounded-md"
+                            className="p-2 rounded-2xl"
                         />
-                        <input type="hidden" name="userId" value={userId} />
+                        <input type="hidden" name="userId" value={userId}/>
                         <button
                             onClick={handleUpdateImage}
                             className="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600"
@@ -122,7 +114,7 @@ const UserProfile: React.FC = () => {
                             onClick={() => setEditMode(true)}
                             className="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600"
                         >
-                            Edit Image
+                            ערוך תמונה
                         </button>
                     </div>
                 )}

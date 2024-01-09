@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { useUserData } from "../../store/hook/useUserData.ts";
-import { Link } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useUserData} from "../../store/hook/useUserData.ts";
+import {Link} from "react-router-dom";
 import api from "../../api/api.tsx";
 
 interface CommentData {
@@ -22,7 +22,7 @@ interface PostData {
 }
 
 const PostList: React.FC = () => {
-    const { userId } = useUserData();
+    const {userId} = useUserData();
     const [posts, setPosts] = useState<PostData[]>([]);
     const [originalPosts, setOriginalPosts] = useState<PostData[]>([]);
     const [editMode, setEditMode] = useState<string | null>(null);
@@ -38,7 +38,7 @@ const PostList: React.FC = () => {
         const fetchPosts = async () => {
             try {
                 const postsResponse = await api.get<PostData[]>(
-                        import.meta.env.VITE_SERVER_GET_ALL_POSTS_PATH,
+                    import.meta.env.VITE_SERVER_GET_ALL_POSTS_PATH,
                     {
                         headers: {
                             authorization: `JWT ${authToken} ${refreshToken}`,
@@ -100,8 +100,8 @@ const PostList: React.FC = () => {
     const handleDelete = async (postId: string) => {
         try {
             await api.delete(
-                    import.meta.env.VITE_SERVER_DELETE_POST_PATH +
-                    `/${postId}`,
+                import.meta.env.VITE_SERVER_DELETE_POST_PATH +
+                `/${postId}`,
                 {
                     headers: {
                         authorization: `JWT ${authToken} ${refreshToken}`,
@@ -128,9 +128,9 @@ const PostList: React.FC = () => {
     const handleUpdate = async (postId: string) => {
         try {
             await api.put(
-                    import.meta.env.VITE_SERVER_UPDATE_POST_PATH +
-                    `/${postId}`,
-                { name: editedName },
+                import.meta.env.VITE_SERVER_UPDATE_POST_PATH +
+                `/${postId}`,
+                {name: editedName},
                 {
                     headers: {
                         authorization: `JWT ${authToken} ${refreshToken}`,
@@ -140,7 +140,7 @@ const PostList: React.FC = () => {
 
             setPosts((prevPosts) =>
                 prevPosts.map((post) =>
-                    post._id === postId ? { ...post, name: editedName } : post
+                    post._id === postId ? {...post, name: editedName} : post
                 )
             );
 
@@ -153,8 +153,8 @@ const PostList: React.FC = () => {
     const handleAddComment = async (postId: string) => {
         try {
             await api.post<CommentData>(
-                    import.meta.env.VITE_SERVER_ADD_COMMENT_PATH,
-                { postId, text: commentTexts[postId] || "", userId },
+                import.meta.env.VITE_SERVER_ADD_COMMENT_PATH,
+                {postId, text: commentTexts[postId] || "", userId},
                 {
                     headers: {
                         authorization: `JWT ${authToken} ${refreshToken}`,
@@ -170,7 +170,7 @@ const PostList: React.FC = () => {
             setPosts((prevPosts) =>
                 prevPosts.map((post) =>
                     post._id === postId
-                        ? { ...post, commentsCount: post.commentsCount + 1 }
+                        ? {...post, commentsCount: post.commentsCount + 1}
                         : post
                 )
             );
@@ -315,7 +315,7 @@ const PostList: React.FC = () => {
                                                     (prevCommentTexts) => ({
                                                         ...prevCommentTexts,
                                                         [post._id]:
-                                                            e.target.value,
+                                                        e.target.value,
                                                     })
                                                 )
                                             }

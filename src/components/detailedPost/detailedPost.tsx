@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
 import api from "../../api/api";
 
 export interface IComment {
@@ -23,7 +23,7 @@ export interface IPost {
 }
 
 const PostDetails: React.FC = () => {
-    const { postId } = useParams<{ postId: string }>();
+    const {postId} = useParams<{ postId: string }>();
     const [post, setPost] = useState<IPost | undefined>();
 
     const authToken = localStorage.getItem("authToken");
@@ -33,8 +33,8 @@ const PostDetails: React.FC = () => {
         const fetchPost = async () => {
             try {
                 const postResponse = await api.get<IPost>(
-                        import.meta.env.VITE_SERVER_GET_POST_PATH +
-                        `/${postId}`,
+                    import.meta.env.VITE_SERVER_GET_POST_PATH +
+                    `/${postId}`,
                     {
                         headers: {
                             authorization: `JWT ${authToken} ${refreshToken}`,
@@ -54,8 +54,8 @@ const PostDetails: React.FC = () => {
                         postResponse.data.gameFileUrl,
                     fileSize: await fetchFileSize(
                         import.meta.env.VITE_SERVER +
-                            "/" +
-                            postResponse.data.gameFileUrl
+                        "/" +
+                        postResponse.data.gameFileUrl
                     ),
                 };
 

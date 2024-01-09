@@ -1,12 +1,9 @@
-import { NavLink } from "react-router-dom";
+import {NavLink} from "react-router-dom";
 import HorizonHubSvg from "./assets/HorizonHub.svg";
-import {
-    useAuthentication,
-    useAuthenticationDispatch,
-} from "./store/hook/useAuthentication";
-import { useEffect } from "react";
-import { useUserDataDispatch } from "./store/hook/useUserData";
-import { extractUserIdFromToken } from "./utillity/jwt";
+import {useAuthentication, useAuthenticationDispatch,} from "./store/hook/useAuthentication";
+import {useEffect} from "react";
+import {useUserDataDispatch} from "./store/hook/useUserData";
+import {extractUserIdFromToken} from "./utillity/jwt";
 import api from "./api/api";
 
 interface INavLinkOption {
@@ -18,7 +15,7 @@ const NavLinkOption = (props: INavLinkOption) => (
     <li className="px-4 py-3">
         <NavLink
             to={props.link}
-            className={({ isActive }) =>
+            className={({isActive}) =>
                 isActive
                     ? "rounded-xl bg-gray-600 px-4 py-3 text-xl leading-none"
                     : "rounded-xl px-4 py-3 text-xl leading-none hover:bg-gray-600"
@@ -37,8 +34,8 @@ const Sidebar = () => {
         const fetchUserData = async (userId: string | null) => {
             try {
                 const response = await api.get(
-                        import.meta.env.VITE_SERVER_USER_GET_DATA +
-                        `/${userId}`,
+                    import.meta.env.VITE_SERVER_USER_GET_DATA +
+                    `/${userId}`,
                     {
                         headers: {
                             authorization: `JWT ${authToken} ${refreshToken}`,
@@ -77,9 +74,10 @@ const Sidebar = () => {
         }
     }, []); // Run this effect only once during component mount
 
-    const { isAuthenticated } = useAuthentication();
+    const {isAuthenticated} = useAuthentication();
     return (
-        <div className="fixed right-0 top-0 z-50 flex h-screen w-[150px] flex-col items-center gap-8 bg-gray-800 px-1 pt-3 pb-4">
+        <div
+            className="fixed right-0 top-0 z-50 flex h-screen w-[150px] flex-col items-center gap-8 bg-gray-800 px-1 pt-3 pb-4">
             <img
                 src={HorizonHubSvg}
                 className="h-36 w-36"
@@ -87,17 +85,17 @@ const Sidebar = () => {
             />
             <ul className="flex flex-col items-center gap-8">
                 {isAuthenticated && (
-                    <NavLinkOption name="מסך בית" link="dashboard" />
+                    <NavLinkOption name="מסך בית" link="dashboard"/>
                 )}
                 {!isAuthenticated && (
-                    <NavLinkOption name="התחברות" link="login" />
+                    <NavLinkOption name="התחברות" link="login"/>
                 )}
                 {!isAuthenticated && (
-                    <NavLinkOption name="הרשמה" link="signup" />
+                    <NavLinkOption name="הרשמה" link="signup"/>
                 )}
-                {isAuthenticated && <NavLinkOption name="חדשות" link="news" />}
+                {isAuthenticated && <NavLinkOption name="חדשות" link="news"/>}
                 {isAuthenticated && (
-                    <NavLinkOption name="חנות" link="gamesStore" />
+                    <NavLinkOption name="חנות" link="gamesStore"/>
                 )}
             </ul>
         </div>

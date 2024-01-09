@@ -6,7 +6,7 @@ import {useUserDataDispatch} from "../../store/hook/useUserData.ts";
 import {GoogleLogin} from "@react-oauth/google";
 import {jwtDecode, JwtPayload} from "jwt-decode";
 import api from "../../api/api.tsx";
-import { AxiosResponse } from "axios";
+import {AxiosResponse} from "axios";
 
 const LoginPage = () => {
     const [username, setUsername] = useState("");
@@ -54,14 +54,14 @@ const LoginPage = () => {
         const userData = response.data.userData;
         const accessToken = response.data.accessToken;
         const refreshToken = response.data.refreshToken;
-        
+
 
         userDataDispatch({
             type: "set-userData",
             payload: {
                 userId: userData._id,
                 fullName: userData.fullName,
-                imagePath: import.meta.env.VITE_SERVER + "/"+userData.picture,
+                imagePath: import.meta.env.VITE_SERVER + "/" + userData.picture,
             },
         });
 
@@ -74,7 +74,7 @@ const LoginPage = () => {
 
         navigate("/dashboard");
     };
-    
+
     return (
         <div
             className="mt-[25vh] p-[40px] translate-x--1/2 translate-y--1/2 bg-[rgba(0,0,0,.6)] box-border rounded-[10px]">

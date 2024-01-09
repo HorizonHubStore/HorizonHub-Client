@@ -1,9 +1,4 @@
-import axios, {
-    AxiosInstance,
-    AxiosResponse,
-    AxiosError,
-    AxiosRequestConfig,
-} from "axios";
+import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse,} from "axios";
 
 interface RetryableRequestConfig extends AxiosRequestConfig {
     _retry?: boolean;
@@ -41,11 +36,11 @@ api.interceptors.response.use(
                         },
                     }
                 );
-                localStorage.setItem('authToken',response.data.accessToken)
-                localStorage.setItem('authToken',response.data.refreshToken)
+                localStorage.setItem('authToken', response.data.accessToken)
+                localStorage.setItem('authToken', response.data.refreshToken)
                 console.log(response.data.accessToken);
                 console.log(response.data.refreshToken);
-                
+
 
                 // Update the original request headers with the new access token
                 if (originalRequest.headers != null) {
