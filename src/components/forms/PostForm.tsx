@@ -85,8 +85,8 @@ const PostForm: React.FC = () => {
             console.log("Post uploaded:", response.data);
             setUploadStatus("Post uploaded successfully");
             // Handle success, e.g., show a success message or redirect
-        } catch (error: any) {
-            console.error("Error uploading post:", error.message);
+        } catch (error) {
+            console.error("Error uploading post:", (error as Error).message);
             setUploadStatus("Error uploading post. Please try again.");
             // Handle error, e.g., show an error message
         }

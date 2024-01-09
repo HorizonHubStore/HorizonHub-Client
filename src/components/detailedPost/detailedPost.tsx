@@ -19,7 +19,7 @@ export interface IPost {
     creatorUserId: string;
     createdAt: Date;
     updatedAt: Date;
-    fileSize: String;
+    fileSize: string;
 }
 
 const PostDetails: React.FC = () => {
