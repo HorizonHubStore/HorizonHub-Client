@@ -11,7 +11,7 @@ const UserProfile: React.FC = () => {
     const [editMode, setEditMode] = useState(false);
 
     const userDataDispatch = useUserDataDispatch();
-    const urlImage = import.meta.env.VITE_SERVER + "/" + imagePath;
+    const urlImage = imagePath;
     const [profileImage, setProfileImage] = useState(urlImage);
 
     // State for storing the selected image file
