@@ -1,7 +1,6 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
 import {useUserData} from "../../store/hook/useUserData.ts";
 import api from "../../api/api.tsx";
-import {TextField} from "@mui/material";
 
 interface PostData {
     game: {
@@ -97,13 +96,16 @@ const PostForm: React.FC = () => {
         <div className="flex flex-col gap-12 p-6 bg-black rounded-lg shadow-md text-center" dir='rtl'>
             <h2 className="text-4xl font-semibold mb-6">העלה משחק חדש</h2>
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                <TextField dir={"ltr"}
-                           className="form-input block w-full"
-                           label="שם המשחק"
-                           variant="outlined"
-                           value={postData.game.name}
-                           onChange={handleChange}
-                />
+                <label className="flex flex-row mb-4 gap-2">
+                    <span className="text-gray-700">שם המשחק:</span>
+                    <input
+                        className="form-input text-center mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                        type="text"
+                        name="name"
+                        value={postData.game.name}
+                        onChange={handleChange}
+                    />
+                </label>
                 <label className="block mb-4">
                     <span className="text-gray-50">הוסף תמונה:</span>
                     <input

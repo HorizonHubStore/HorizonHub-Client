@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useUserData} from "../../store/hook/useUserData.ts";
 import {Link} from "react-router-dom";
 import api from "../../api/api.tsx";
+import {Button, TextField} from "@mui/material";
 
 interface CommentData {
     _id: string;
@@ -194,37 +195,37 @@ const PostList: React.FC = () => {
 
     return (
         <div className="box-border">
-            <h2 className="mt-0 mx-0 mb-8 p-0 text-white text-center text-4xl">
-                Posts
+            <h2 className="mt-5 mx-0 mb-[20px] p-0 text-white text-center text-4xl">
+                חנות משחקים
             </h2>
             <div className="flex items-center justify-center mb-4">
-                <input
+                <TextField
+                    className="w-[400px]"
+                    label="חיפוש לפי שם יוצר המשחק"
                     type="text"
-                    placeholder="Search by creator name"
                     value={searchTerm}
                     onChange={(e) => {
                         setSearchTerm(e.target.value);
                         handleSearch(e.target.value);
                     }}
-                    className="border-2 border-gray-300 p-2 rounded-md"
                 />
             </div>
             <div className="flex flex-wrap justify-center">
                 {posts.map((post) => {
                     return (
-                        <div key={post._id} className="m-4 max-w-[360px]">
+                        <div key={post._id} className="m-4 max-w-[360px] text-center" dir="rtl">
                             <div className="bg-[#222831] text-[#ffffff] rounded-2xl overflow-hidden">
                                 <Link to={`/gamesStore/${post._id}`}>
                                     <img
                                         src={post.pictureUrl}
-                                        alt="Post"
+                                        alt="לא הועלתה תמונה"
                                         className="object-cover w-full h-48"
                                     />
                                 </Link>
 
                                 <div className="p-4">
                                     {editMode === post._id ? (
-                                        <div className="flex items-center space-x-2">
+                                        <div className="flex items-center gap-2">
                                             <input
                                                 type="text"
                                                 value={editedName}
@@ -250,21 +251,16 @@ const PostList: React.FC = () => {
                                                 {post.name}
                                             </h3>
                                             <p className="text-gray-300">
-                                                Creator: {post.creatorName}
+                                                יוצר המשחק: {post.creatorName}
                                             </p>
-                                            <a
-                                                href={post.gameFileUrl}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-blue-500 hover:underline"
-                                            >
-                                                Download Game File
-                                            </a>{" "}
+                                            <Button href={post.gameFileUrl} target="_blank" variant={"outlined"} size={"small"}
+                                                    rel="noopener noreferrer">הורדה</Button>
+                                            {" "}
                                             <span className="text-gray-500">
                                                 ({post.fileSize || "Unknown"})
                                             </span>
                                             <p className="text-gray-500">
-                                                {post.commentsCount} Comments
+                                                {post.commentsCount} תגובות
                                             </p>
                                         </>
                                     )}
@@ -305,10 +301,10 @@ const PostList: React.FC = () => {
                                         </div>
                                     )}
 
-                                    <div className="flex mt-2 space-x-2">
-                                        <input
+                                    <div className="flex mt-2 gap-2">
+                                        <TextField dir='ltr'
+                                            label="הוסף תגובה"
                                             type="text"
-                                            placeholder="Add a comment"
                                             value={commentTexts[post._id] || ""}
                                             onChange={(e) =>
                                                 setCommentTexts(
@@ -319,16 +315,12 @@ const PostList: React.FC = () => {
                                                     })
                                                 )
                                             }
-                                            className="border-2 border-gray-300 p-2 rounded-md"
                                         />
-                                        <button
-                                            onClick={() =>
-                                                handleAddComment(post._id)
-                                            }
-                                            className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
-                                        >
-                                            Add Comment
-                                        </button>
+                                        <Button variant="contained"
+                                                onClick={() =>
+                                                    handleAddComment(post._id)
+                                                }
+                                        ><label className="text-3xl">✓</label></Button>
                                     </div>
                                 </div>
                             </div>
