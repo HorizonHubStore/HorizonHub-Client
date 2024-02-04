@@ -3,29 +3,24 @@ import {useEffect, useState} from "react";
 
 async function getNewsFromApi() {
     return await axios.get(
-        (import.meta.env.VITE_NEWS_API_URL + import.meta.env.VITE_NEWS_API_KEY),
-        {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
+        (import.meta.env.VITE_NEWS_API_URL + import.meta.env.VITE_NEWS_API_KEY)
     );
 }
 
 interface IArticles {
     author: string | null,
-    description: string,
+    content: string,
     title: string | undefined,
     url: string | null,
-    urlToImage: string
+    imageUrl: string
 }
 
 const NewsPage = () => {
     const [articles, setArticles] = useState<IArticles[]>([]);
     useEffect(() => {
         getNewsFromApi().then(value => {
-            setArticles(value.data.articles)
-            console.log(value.data as string);
+            console.log(value);
+            setArticles(value.data.data);
         });
     }, [])
 
@@ -41,12 +36,12 @@ const NewsPage = () => {
                            href={article.url ?? undefined}>
                             <div>
                                 <div className="bg-[#f1f2f3] flex h-[215px]">
-                                    <img src={article.urlToImage} alt="no image" className='object-cover w-full h-full'/>
+                                    <img src={article.imageUrl} alt="no image" className='object-cover w-full h-full'/>
                                 </div>
                                 <div className="pt-3 p-[10px] bg-[#222831] h-min">
                                     <label className="text-gray-50">{article.title} - by {article.author}</label>
                                     <div className="card-text text-blue-50">
-                                        {article.description}
+                                        {article.content}
                                     </div>
                                 </div>
                             </div>
