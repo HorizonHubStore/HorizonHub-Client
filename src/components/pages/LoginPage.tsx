@@ -104,7 +104,7 @@ const LoginPage = () => {
                     variant="contained"
                     onClick={handleLogin}
                 >
-                    Submit
+                    התחבר
                 </Button>
                 <GoogleLogin
                     onSuccess={(credentialResponse) => {
@@ -117,7 +117,7 @@ const LoginPage = () => {
                     onError={() => {
                         console.log("login failed");
                     }}
-                ></GoogleLogin>
+                />
                 <Link dir='rtl' to={'../signup'} className='text-blue-400 hover:underline'>אם אין לך חשבון לחץ כאן
                     להרשם!</Link>
             </form>

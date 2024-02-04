@@ -44,16 +44,17 @@ const DashboardPage = () => {
 
 
     return (
-        <div
-            className='flex flex-col gap-5 p-6 translate-x--1/2 translate-y--1/2 bg-[rgba(0,0,0,.6)] box-border rounded-[10px]'>
-            <UserProfile/>
-            <PostForm/>
-            <div className="flex justify-center">
+        <div>
+            <div
+                className='flex flex-row gap-5 p-6 box-border rounded-[10px]'>
+                <UserProfile/>
+                <PostForm/>
+            </div>
+            <div className="flex justify-center pt-10">
                 <Button className='w-[200px]' variant="contained" onClick={handleLogout}>
                     התנתק מהמערכת
                 </Button>
             </div>
-
         </div>
     );
 }

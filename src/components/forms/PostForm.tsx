@@ -1,6 +1,7 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
 import {useUserData} from "../../store/hook/useUserData.ts";
 import api from "../../api/api.tsx";
+import {TextField} from "@mui/material";
 
 interface PostData {
     game: {
@@ -93,43 +94,39 @@ const PostForm: React.FC = () => {
     };
 
     return (
-        <div className="max-w-md mx-auto p-6 bg-gray-800 rounded shadow-md">
-            <h2 className="text-2xl font-semibold mb-6">Create new post</h2>
-            <form onSubmit={handleSubmit}>
+        <div className="flex flex-col gap-12 p-6 bg-black rounded-lg shadow-md text-center" dir='rtl'>
+            <h2 className="text-4xl font-semibold mb-6">העלה משחק חדש</h2>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                <TextField dir={"ltr"}
+                           className="form-input block w-full"
+                           label="שם המשחק"
+                           variant="outlined"
+                           value={postData.game.name}
+                           onChange={handleChange}
+                />
                 <label className="block mb-4">
-                    <span className="text-gray-700">Game Name:</span>
+                    <span className="text-gray-50">הוסף תמונה:</span>
                     <input
-                        className="form-input mt-1 block w-full"
-                        type="text"
-                        name="name"
-                        value={postData.game.name}
-                        onChange={handleChange}
-                    />
-                </label>
-
-                <label className="block mb-4">
-                    <span className="text-gray-700">Game Picture:</span>
-                    <input
-                        className="form-input mt-1 block w-full"
+                        className="form-input block w-full"
                         type="file"
                         name="game.picture"
                         onChange={handleChange}
                     />
                     {selectedPicture && (
-                        <p className="text-gray-600 mt-2">Selected Picture: {selectedPicture.name}</p>
+                        <p className="text-gray-50">שם נבחר: {selectedPicture.name}</p>
                     )}
                 </label>
 
                 <label className="block mb-4">
-                    <span className="text-gray-700">Game File:</span>
+                    <span className="text-gray-50">קובץ משחק:</span>
                     <input
-                        className="form-input mt-1 block w-full"
+                        className="form-input block w-full"
                         type="file"
                         name="game.gameFile"
                         onChange={handleChange}
                     />
                     {selectedGameFile && (
-                        <p className="text-gray-600 mt-2">Selected Game File: {selectedGameFile.name}</p>
+                        <p className="text-gray-50">קובץ משחק נבחר: {selectedGameFile.name}</p>
                     )}
                 </label>
 
@@ -143,7 +140,7 @@ const PostForm: React.FC = () => {
                     type="submit"
                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                 >
-                    Upload Post
+                    העלה משחק
                 </button>
             </form>
         </div>

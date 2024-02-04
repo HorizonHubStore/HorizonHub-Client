@@ -60,7 +60,7 @@ const SignupPage = () => {
                                setPassword(event.target.value);
                            }}/>
                 {error && <p className="text-red-700">{error}</p>}
-                <Button className='w-[200px]' variant="contained" onClick={handleSignup}>Submit</Button>
+                <Button className='w-[200px]' variant="contained" onClick={handleSignup}>הרשם</Button>
             </form>
         </div>
     );

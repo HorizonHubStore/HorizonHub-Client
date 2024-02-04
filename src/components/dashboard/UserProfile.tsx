@@ -11,8 +11,7 @@ const UserProfile: React.FC = () => {
     const [editMode, setEditMode] = useState(false);
 
     const userDataDispatch = useUserDataDispatch();
-    const urlImage = imagePath;
-    const [profileImage, setProfileImage] = useState(urlImage);
+    const [profileImage, setProfileImage] = useState(imagePath);
 
     // State for storing the selected image file
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -77,12 +76,12 @@ const UserProfile: React.FC = () => {
     };
 
     return (
-        <div className="bg-gray-800 text-white p-6 rounded-lg shadow-md flex flex-col items-center">
-            <h2 className="text-4xl font-semibold mb-4">פרופיל אישי</h2>
-            <div className="flex flex-col items-center space-y-4">
-                <h3 className="text-2xl font-semibold" dir='rtl'>שם מלא: {fullName}</h3>
+        <div className="bg-black text-white p-6 rounded-lg shadow-md flex flex-col items-center">
+            <h2 className="text-5xl font-semibold mb-4">פרופיל אישי</h2>
+            <div className="flex flex-col items-center gap-12">
+                <h3 className="text-4xl font-semibold" dir='rtl'>{fullName}</h3>
                 {editMode ? (
-                    <div className="flex flex-col items-center space-y-2">
+                    <div className="flex flex-col items-center gap-12">
                         <input
                             type="file"
                             accept="image/*"
@@ -104,11 +103,11 @@ const UserProfile: React.FC = () => {
                         </button>
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center space-y-2">
+                    <div className="flex flex-col items-center gap-12">
                         <img
                             src={profileImage}
                             alt="User"
-                            className="rounded-full h-32 w-32 object-cover"
+                            className="rounded-full h-52 w-52 object-cover"
                         />
                         <button
                             onClick={() => setEditMode(true)}
