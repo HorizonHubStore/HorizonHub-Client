@@ -253,7 +253,8 @@ const PostList: React.FC = () => {
                                             <p className="text-gray-300">
                                                 יוצר המשחק: {post.creatorName}
                                             </p>
-                                            <Button href={post.gameFileUrl} target="_blank" variant={"outlined"} size={"small"}
+                                            <Button href={post.gameFileUrl} target="_blank" variant={"outlined"}
+                                                    size={"small"}
                                                     rel="noopener noreferrer">הורדה</Button>
                                             {" "}
                                             <span className="text-gray-500">
@@ -303,18 +304,18 @@ const PostList: React.FC = () => {
 
                                     <div className="flex mt-2 gap-2">
                                         <TextField dir='ltr'
-                                            label="הוסף תגובה"
-                                            type="text"
-                                            value={commentTexts[post._id] || ""}
-                                            onChange={(e) =>
-                                                setCommentTexts(
-                                                    (prevCommentTexts) => ({
-                                                        ...prevCommentTexts,
-                                                        [post._id]:
-                                                        e.target.value,
-                                                    })
-                                                )
-                                            }
+                                                   label="הוסף תגובה"
+                                                   type="text"
+                                                   value={commentTexts[post._id] || ""}
+                                                   onChange={(e) =>
+                                                       setCommentTexts(
+                                                           (prevCommentTexts) => ({
+                                                               ...prevCommentTexts,
+                                                               [post._id]:
+                                                               e.target.value,
+                                                           })
+                                                       )
+                                                   }
                                         />
                                         <Button variant="contained"
                                                 onClick={() =>

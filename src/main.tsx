@@ -10,6 +10,7 @@ import {DashboardRoute} from "./routes/DashboardRoute.tsx";
 import {NewsRoute} from "./routes/NewsRoute.tsx";
 import {GamesStoreRoute} from './routes/GamesStoreRoute.tsx';
 import PostDetails from './components/detailedPost/detailedPost.tsx';
+import {GamePriceComparisonRoute} from "./routes/GamePriceComparisonRoute.tsx";
 
 const router = createBrowserRouter([
     {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
             {
                 path: 'news',
                 element: <NewsRoute/>,
+            },
+            {
+                path: 'gamePriceComparison',
+                element: <GamePriceComparisonRoute/>,
             },
             {
                 path: 'gamesStore',
