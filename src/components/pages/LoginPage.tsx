@@ -1,5 +1,5 @@
 import {ChangeEvent, useState} from "react";
-import {useAuthenticationDispatch} from "../../store/hook/useAuthentication.ts";
+import {useAuthentication,useAuthenticationDispatch} from "../../store/hook/useAuthentication.ts";
 import {Link, redirect, useNavigate} from "react-router-dom";
 import {Button, TextField} from "@mui/material";
 import {useUserDataDispatch} from "../../store/hook/useUserData.ts";
@@ -71,8 +71,10 @@ const LoginPage = () => {
 
         // Update the authentication status
         authenticationDispatch({type: "set-isAuthenticated", payload: true});
+        const {isAuthenticated} = useAuthentication();
 
-        navigate("/dashboard");
+        setTimeout(()=>{isAuthenticated &&  navigate("/dashboard");},0)
+
     };
 
     return (
