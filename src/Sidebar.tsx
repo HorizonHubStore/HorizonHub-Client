@@ -80,8 +80,7 @@ const Sidebar = () => {
     }, []); // Run this effect only once during component mount
 
     const {isAuthenticated} = useAuthentication();
-    {isAuthenticated &&  navigate("/dashboard");
-}
+    
     return (
         <div
             className="fixed right-0 top-0 z-50 flex h-screen w-[150px] flex-col items-center gap-8 bg-gray-800 px-1 pt-3 pb-4">
