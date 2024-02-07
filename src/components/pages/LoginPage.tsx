@@ -71,11 +71,12 @@ const LoginPage = () => {
 
         // Update the authentication status
         authenticationDispatch({type: "set-isAuthenticated", payload: true});
-        const {isAuthenticated} = useAuthentication();
 
-        setTimeout(()=>{isAuthenticated &&  navigate("/dashboard");},0)
-
+        navigate("/dashboard");
     };
+    const {isAuthenticated} = useAuthentication();
+
+    setTimeout(()=>{isAuthenticated &&  navigate("/dashboard");},0)
 
     return (
         <div

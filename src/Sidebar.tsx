@@ -1,11 +1,10 @@
 import {NavLink} from "react-router-dom";
+
 import HorizonHubSvg from "./assets/HorizonHub.svg";
 import {useAuthentication, useAuthenticationDispatch,} from "./store/hook/useAuthentication";
 import {useEffect} from "react";
 import {useUserDataDispatch} from "./store/hook/useUserData";
 import {extractUserIdFromToken} from "./utillity/jwt";
-import {useNavigate} from "react-router-dom";
-
 import api from "./api/api";
 
 interface INavLinkOption {
@@ -31,8 +30,6 @@ const NavLinkOption = (props: INavLinkOption) => (
 const Sidebar = () => {
     const authenticationDispatch = useAuthenticationDispatch();
     const userDataDispatch = useUserDataDispatch();
-    const navigate = useNavigate();
-
     useEffect(() => {
         const fetchUserData = async (userId: string | null) => {
             try {
@@ -71,8 +68,6 @@ const Sidebar = () => {
                 type: "set-isAuthenticated",
                 payload: true,
             });
-            navigate("/dashboard");
-
         } else {
             localStorage.removeItem("authToken");
             localStorage.removeItem("refreshToken");
@@ -80,7 +75,8 @@ const Sidebar = () => {
     }, []); // Run this effect only once during component mount
 
     const {isAuthenticated} = useAuthentication();
-    
+
+
     return (
         <div
             className="fixed right-0 top-0 z-50 flex h-screen w-[150px] flex-col items-center gap-8 bg-gray-800 px-1 pt-3 pb-4">
@@ -100,8 +96,9 @@ const Sidebar = () => {
                     <NavLinkOption name="הרשמה" link="signup"/>
                 )}
                 {isAuthenticated && <NavLinkOption name="חדשות" link="news"/>}
-                {isAuthenticated && (<NavLinkOption name="הנחות" link="gamePriceComparison"/>)}
-                {isAuthenticated && (<NavLinkOption name="חנות" link="gamesStore"/>)}
+                {isAuthenticated && (
+                    <NavLinkOption name="חנות" link="gamesStore"/>
+                )}
             </ul>
         </div>
     );
